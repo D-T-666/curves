@@ -6,7 +6,7 @@ function drawSpline(anchors, resolution) {
   
   for (let i = 0; i < resolution; i++) {
   
-    stroke(255, 10);
+    stroke(60, 80, 255, 10);
     strokeWeight(12);
     line(
       points[i].x,
