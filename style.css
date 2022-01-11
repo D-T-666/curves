@@ -1,0 +1,35 @@
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overscroll-behavior: none;
+    max-zoom: 100%;
+}
+canvas {
+    display: block;
+}
+main {
+    position: relative;
+    display: block;
+}
+
+#overlay-container {
+    position: absolute;
+    z-index: 10;
+    display: flex;
+    min-width: 160px;
+    width: 30%;
+    max-width: 200px;
+    height: calc(100% - 200px);
+    flex-direction: column;
+    justify-content: stretch;
+}
+
+#overlay {
+    position: relative;
+    display: block;
+    margin: 1rem;
+    flex-grow: 1;
+    border: solid 1px white;
+    background-color: #fff4;
+}

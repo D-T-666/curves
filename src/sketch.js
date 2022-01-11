@@ -2,43 +2,54 @@ let _default_spline = [];
 
 let splines = [];
 
-let background_spline = [];
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  _default_spline.push(createVector(width / 2 - 200 + 110, height / 2 - 200 + 250));
-  _default_spline.push(createVector(width / 2 - 200 + 390, height / 2 - 200 + 100));
-  _default_spline.push(createVector(width / 2 - 200 + 10 , height / 2 - 200 + 100));
-  _default_spline.push(createVector(width / 2 - 200 + 290, height / 2 - 200 + 250));
-  // background_spline = getSpline(main_spline, 50);
+  // _default_spline.push(createVector(width / 2 - 200 + 110, height / 2 - 200 + 250));
+  // _default_spline.push(createVector(width / 2 - 200 + 390, height / 2 - 200 + 100));
+  // _default_spline.push(createVector(width / 2 - 200 + 10 , height / 2 - 200 + 100));
+  // _default_spline.push(createVector(width / 2 - 200 + 290, height / 2 - 200 + 250));
+  for (let i = 0; i < 6; i++)
+    _default_spline.push(createVector(random(width), random(height)));
 
   splines.push(_default_spline);
 }
 
 function draw() {
   background(60, 50, 255);
-
-  // if(frameCount % 10 == 0)
-  //   background_spline = getSpline(main_spline, 50);
-
-  // drawRepeatingCurveBackground(background_spline);
+  background(110, 60, 200);
+  // background(25, 14, 60);
   
   for (let i = 0; i < splines.length; i++) {
     handleAnchors(splines[i]);
     
-    drawSpline(splines[i], 150);
+    drawSpline(splines[i], 300);
   }
 }
 
 function keyPressed() {
   if (key == " ") {
-    vecs = splines.map(normalizeSpline);
-    console.log(JSON.stringify(vecs.map(
-      spl => {anchors: spl.anchors.map(elt => ({
+    console.log(JSON.stringify(splines.map(
+      spl => {normalizeSpline(spl.anchors).map(elt => ({
         x: elt.x, y: elt.y
       }))}
     )));
   }
+}
+
+function mouseWheel(event) {
+  // console.log(event);
+  let mouse = createVector(event.offsetX, event.offsetY);
+  splines.forEach(spline =>
+    spline.forEach(elt => {
+      if (event.ctrlKey) {
+        var s = Math.exp(-event.deltaY/100);
+        elt.set(elt.copy().sub(mouse).mult(s).add(mouse));
+      } else {
+        elt.x -= event.deltaX;
+        elt.y -= event.deltaY;
+      }
+    })
+  )
 }
 
 function drawRepeatingCurveBackground(curve) {
