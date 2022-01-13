@@ -10,10 +10,11 @@
   <body>
     <script src="src/anchor.js"></script>
     <script src="src/spline.js"></script>
+    <script src="src/rect-preview.js"></script>
     <script src="src/sketch.js"></script>
 
     <div id="overlay-container">
-      <div id="overlay">
+      <div id="overlay" onclick="e => e.stopPropagation()">
         settings will appear here one day
       </div>
     </div>

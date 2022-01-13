@@ -1,35 +1,53 @@
-let _default_spline = [];
-
-let splines = [];
+let splines = [{shape: [], vars: {grabbed_index: -1}, active: true}];
+let colors = {};
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  // _default_spline.push(createVector(width / 2 - 200 + 110, height / 2 - 200 + 250));
-  // _default_spline.push(createVector(width / 2 - 200 + 390, height / 2 - 200 + 100));
-  // _default_spline.push(createVector(width / 2 - 200 + 10 , height / 2 - 200 + 100));
-  // _default_spline.push(createVector(width / 2 - 200 + 290, height / 2 - 200 + 250));
-  for (let i = 0; i < 6; i++)
-    _default_spline.push(createVector(random(width), random(height)));
+  // for (let i = 0; i < 10; i++)
+  //   splines[0].shape.push(createVector(random(width), random(height)));
 
-  splines.push(_default_spline);
+  loadFromLocalStorage();
+
+  colors.bg = color(60, 50, 255);
+  colors.bg = color(110, 60, 200);
+  colors.bg = color(25, 14, 60);
 }
 
 function draw() {
-  background(60, 50, 255);
-  background(110, 60, 200);
-  // background(25, 14, 60);
+  background(colors.bg);
+
+  if (mouseIsPressed) {
+    handleMouse(
+      createVector(mouseX, mouseY),
+      createVector(pmouseX, pmouseY)
+    );
+  } 
   
   for (let i = 0; i < splines.length; i++) {
-    handleAnchors(splines[i]);
-    
-    drawSpline(splines[i], 300);
+    updateVars(splines[i]);
+
+    if ((splines[i].vars.pchanged !== splines[i].vars.changed) && splines[i].vars.pchanged === true) {
+      saveToLocalStorage();
+    }
+
+    if (splines[i].active) {
+      drawAnchors(
+        createVector(mouseX, mouseY),
+        createVector(pmouseX, pmouseY),
+        splines[i].shape,
+        splines[i].vars
+      );
+      drawPreviewWindow(splines[i])
+    }
+
+    drawSpline(splines[i].shape, 300);
   }
 }
 
 function keyPressed() {
   if (key == " ") {
     console.log(JSON.stringify(splines.map(
-      spl => {normalizeSpline(spl.anchors).map(elt => ({
+      spl => {normalizeSpline(spl.shape).map(elt => ({
         x: elt.x, y: elt.y
       }))}
     )));
@@ -40,7 +58,7 @@ function mouseWheel(event) {
   // console.log(event);
   let mouse = createVector(event.offsetX, event.offsetY);
   splines.forEach(spline =>
-    spline.forEach(elt => {
+    spline.shape.forEach(elt => {
       if (event.ctrlKey) {
         var s = Math.exp(-event.deltaY/100);
         elt.set(elt.copy().sub(mouse).mult(s).add(mouse));
@@ -52,47 +70,34 @@ function mouseWheel(event) {
   )
 }
 
-function drawRepeatingCurveBackground(curve) {
-  let sx = Infinity, sy = Infinity, bx = -Infinity, by = -Infinity;
-  let aw, ah;
+function saveToLocalStorage() {
+  let data = splines.map(spline => ({
+    shape: spline.shape.map(elt => ({
+      x: elt.x, 
+      y: elt.y
+    }))
+  }));
 
-  for (let i = 0; i < curve.length; i++) {
-    if (curve[i].x > bx) bx = curve[i].x;
-    if (curve[i].y > by) by = curve[i].y;
-    if (curve[i].x < sx) sx = curve[i].x;
-    if (curve[i].y < sy) sy = curve[i].y;
-  }
-  aw = (bx-sx) / max((bx-sx), (by-sy));
-  ah = (by-sy) / max((bx-sx), (by-sy));
+  console.log(data);
 
-  let norm = [];
-  for (let i = 0; i < curve.length; i++) {
-    norm[i] = createVector(
-      map(curve[i].x, sx, bx, 0, 1),
-      map(curve[i].y, sy, by, 0, 1)
-    );
-  }
+  window.localStorage.setItem("curve-editor-splines", JSON.stringify(data));
+}
 
-  let scl = 100;
+function loadFromLocalStorage() {
+  splines = JSON.parse(window.localStorage.getItem("curve-editor-splines"))
+  .map(spline => ({ 
+    shape: spline.shape.map(elt => createVector(elt.x, elt.y)),
+    vars: {
+      grabbed_index: -1
+    },
+    active: false
+  }))
 
-  for (let y = 0; y < height; y += scl * ah) {
-    for (let x = 0; x < width; x += scl * aw) {
-      let pi = 0
-      for (let i = 0; i < curve.length - 2; i += 2) {
-        stroke(22, 22, 44, 40);
-        strokeWeight(2);
-        line(
-          x + scl * aw * norm[i].x,
-          y + scl * ah * norm[i].y,
-          x + scl * aw * norm[pi].x,
-          y + scl * ah * norm[pi].y);
-        pi = i;
-      }
-      line(
-        x + scl * aw * norm[pi].x,
-        y + scl * ah * norm[pi].y,
-        x + scl * aw * norm[norm.length-1].x,
-        y + scl * ah * norm[norm.length-1].y);
-    }
+  splines[splines.length - 1].active = true;
+}
+
+function handleMouse(mouse, pmouse) {
+  for (let i = 0; i < splines.length; i++) {
+    interactAnchors(mouse, pmouse, splines[i].shape, splines[i].vars);
   }
 }

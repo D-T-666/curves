@@ -17,10 +17,11 @@ main {
     position: absolute;
     z-index: 10;
     display: flex;
-    min-width: 160px;
+    /* min-width: 176px;
     width: 30%;
-    max-width: 200px;
-    height: calc(100% - 200px);
+    max-width: 232px; */
+    width: 232px;
+    height: calc(100% - 200px - 1rem);
     flex-direction: column;
     justify-content: stretch;
 }
@@ -28,8 +29,8 @@ main {
 #overlay {
     position: relative;
     display: block;
-    margin: 1rem;
+    margin: 16px;
     flex-grow: 1;
     border: solid 1px white;
-    background-color: #fff4;
+    background-color: rgba(255, 255, 255, .5);
 }
