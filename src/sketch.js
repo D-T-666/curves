@@ -3,8 +3,6 @@ let colors = {};
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  // for (let i = 0; i < 10; i++)
-  //   splines[0].shape.push(createVector(random(width), random(height)));
 
   loadFromLocalStorage();
 
@@ -94,6 +92,9 @@ function loadFromLocalStorage() {
       },
       active: false
     }))
+  else
+    for (let i = 0; i < 5; i++)
+      splines[0].shape.push(createVector(random(width), random(height)));
 
   splines[splines.length - 1].active = true;
 }
