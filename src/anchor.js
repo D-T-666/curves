@@ -28,7 +28,7 @@ function drawAnchors(mouse, pmouse, anchors, vars) {
 		}
 	}
 
-	if (smallest_distance < r) {
+	if (smallest_distance < r * 2) {
 		vars.new_anchor_index = new_anchor_index;
 		vars.new_anchor_point_draw = new_anchor_point;
 	} else {
@@ -125,30 +125,14 @@ function interactAnchors(mouse, pmouse, anchors, vars) {
 		} else {
 			vars.grabbed_index = -1;
 		}
-		
-		if (i < anchors.length - 1) {
-			let m = mouse.copy().sub(anchors[i]);
-			let v = anchors[i + 1].copy().sub(anchors[i]).mult(-1);
-			let v_norm = v.copy().normalize();
-			
-			let dot = v_norm.dot(m);
-			
-			let p = v_norm.mult(dot).add(anchors[i]);
-			
-			if (dot < 0 && dot > -v.mag() && mouse.dist(p) < smallest_distance) {
-				smallest_distance = mouse.dist(p);
-				new_anchor_point = p;
-				new_anchor_index = i;
-			}
-		}
 	}
 
 	if (mouseIsPressed && vars.grabbed_index < 0 && vars.new_anchor_index >= 0) {
 		if (vars.inserting_anchor) {
 			anchors[vars.new_anchor_index + 1] = mouse.copy();
 		} else {
-			anchors.splice(new_anchor_index + 1, 0, mouse.copy());
-			vars.new_anchor_index = new_anchor_index;
+			anchors.splice(vars.new_anchor_index + 1, 0, mouse.copy());
+			// vars.new_anchor_index = new_anchor_index;
 			vars.inserting_anchor = true;
 		}
 		vars.changed = true;
