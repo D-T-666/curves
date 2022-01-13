@@ -84,14 +84,16 @@ function saveToLocalStorage() {
 }
 
 function loadFromLocalStorage() {
-  splines = JSON.parse(window.localStorage.getItem("curve-editor-splines"))
-  .map(spline => ({ 
-    shape: spline.shape.map(elt => createVector(elt.x, elt.y)),
-    vars: {
-      grabbed_index: -1
-    },
-    active: false
-  }))
+  data = window.localStorage.getItem("curve-editor-splines");
+  if (data)
+    splines = JSON.parse(data)
+    .map(spline => ({ 
+      shape: spline.shape.map(elt => createVector(elt.x, elt.y)),
+      vars: {
+        grabbed_index: -1
+      },
+      active: false
+    }))
 
   splines[splines.length - 1].active = true;
 }
