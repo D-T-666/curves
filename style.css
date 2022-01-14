@@ -21,16 +21,100 @@ main {
     width: 30%;
     max-width: 232px; */
     width: 232px;
-    height: calc(100% - 200px - 1rem);
+    height: calc(100% - 216px);
     flex-direction: column;
     justify-content: stretch;
 }
 
 #overlay {
     position: relative;
-    display: block;
+    display: flex;
+    flex-direction: column;
     margin: 16px;
     flex-grow: 1;
     border: solid 1px white;
-    background-color: rgba(255, 255, 255, .5);
+    color: white;
+    /* background-color: rgba(255, 255, 255, .5); */
+    overflow-y: auto;
+}
+
+.spline-listing {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: solid 1px white;
+    color: inherit;
+    font-family: monospace;
+    font-size: 18px;
+    height: 40px;
+}
+
+.spline-listing.active {
+    /* background-color: rgb(25, 14, 60); */
+}
+
+.spline-listing textarea {
+    margin: 0;
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    resize: none;
+    padding: 6px;
+    flex-shrink: 1;
+    outline: none;
+}
+
+.spline-listing textarea:focus {
+    background-color: transparent;
+}
+
+.spline-listing .tool-box {
+    float: right;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-around;
+    border-left: solid 1px white;
+}
+
+.spline-listing .tool-box button {
+    color: inherit;
+    flex-grow: 1;
+    font-size: 9px;
+    font-family: monospace;
+    background-color: transparent;
+    padding: 0px 4px;
+    border: none;
+}
+
+.spline-listing.active .tool-box button {
+    background-color: #fff8;
+}
+
+.spline-listing.active .tool-box button.up:hover {
+    background-color: #6af8;
+}
+.spline-listing.active .tool-box button.re:hover {
+    background-color: #6fa8;
+}
+.spline-listing.active .tool-box button.dw:hover {
+    background-color: #6af8;
+}
+
+.spline-listing .tool-box button + button {
+    border-top: 1px solid white;
+}
+
+#overlay .spacer {
+    flex-grow: 1;
+}
+
+#overlay .new-spline {
+    position: sticky;
+    bottom: 0;
+    background-color: transparent;
+    color: aqua;
+    border: none;
+    border-top: solid 1px white;
+    font-family: monospace;
+    padding: 6px;
 }

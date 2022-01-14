@@ -1,7 +1,8 @@
 function drawPreviewWindow(spline) {
     stroke(255);
     strokeWeight(1);
-    fill(255, 127);
+    noFill();
+    // fill(255, 127);
     rect(16, height - 216, 200, 200);
 
     let anchors = normalizeSpline(spline.shape).anchors;
@@ -10,8 +11,8 @@ function drawPreviewWindow(spline) {
 
     drawSpline(anchors, 100, {
         t: 14,
-        s: 2,
-        fill: color(127),
-        stroke: color(0)
+        s: 1,
+        fill: colors.bg,
+        stroke: color(255)
     })
 }
