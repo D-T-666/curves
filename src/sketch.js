@@ -8,9 +8,13 @@ function setup() {
 
   overlay(splines);
 
-  colors.bg = color(60, 50, 255);
-  colors.bg = color(110, 60, 200);
+  colors.bg = color(255, 220, 200);
+  colors.fg = color(0);
+
   colors.bg = color(25, 14, 60);
+  colors.fg = color(255);
+
+  // colors.fill_function = (t) => 
 }
 
 function draw() {
@@ -23,33 +27,6 @@ function draw() {
       createVector(pmouseX, pmouseY)
     );
   } 
-  
-  for (let i = 0; i < splines.length-1; i++) {
-    let a1 = splines[i].shape[splines[i].shape.length-1]
-      .copy()
-      .sub(splines[i].shape[splines[i].shape.length-2]);
-    a1 = a1
-      .mult(2000/a1.magSq())
-      .add(splines[i].shape[splines[i].shape.length-1])
-    let a2 = splines[i+1].shape[0]
-      .copy()
-      .sub(splines[i+1].shape[1])
-    a2 = a2
-      .mult(2000/a2.magSq())
-      .add(splines[i+1].shape[0])
-
-
-    drawSpline([
-      splines[i].shape[splines[i].shape.length-1],
-      a1,
-      a2,
-      splines[i+1].shape[0]
-    ], 100, {
-      t: 4, s: 2,
-      fill: color(0,0),
-      stroke: color(0, 255, 255, 40)
-    })
-  }
 
   for (let i = 0; i < splines.length; i++) {
     updateVars(splines[i]);
@@ -59,12 +36,58 @@ function draw() {
     }
 
     drawSpline(splines[i].shape, splines[i].active ? 150 : 50, {
-      t: 4,
-      s: 2,
-      fill: colors.bg,
-      stroke: color(80, 110, 255, splines[i].active ? 255 : 32)
+      t: 16,
+      s: 0,
+      stroke: colors.fg,
+      fill: (t) => {
+        let nt = map(t, 0, 1, (i*2)/(splines.length*2-1), (i*2+1)/(splines.length*2-1));
+        return color(
+          (nt*360+230)%360,
+          65 + 15 * sin(nt * TWO_PI * 6 + PI),
+          100 - 10 * cos(nt * PI * 9),
+          splines[i].active ? 1 : 1)
+      },
+      caps: 0 //(i == 0) + 2 * (i == splines.length-1)
     });
 
+    if (i < splines.length - 1) {
+      let a1 = splines[i].shape[splines[i].shape.length-1]
+        .copy()
+        .sub(splines[i].shape[splines[i].shape.length-2]);
+      let a2 = splines[i+1].shape[0]
+        .copy()
+        .sub(splines[i+1].shape[1])
+
+      let d = a1.magSq() + a2.magSq();
+
+      a1 = a1
+        .mult(0.5/(a1.magSq() / d))
+        .add(splines[i].shape[splines[i].shape.length-1])
+      a2 = a2
+        .mult(0.5/(a2.magSq() / d))
+        .add(splines[i+1].shape[0])
+
+
+      drawSpline([
+        splines[i].shape[splines[i].shape.length-1],
+        a1,
+        a2,
+        splines[i+1].shape[0]
+      ], 25, {
+        t: 16, s: 0,
+        stroke: colors.fg,
+        fill: (t) => {
+          let nt = map(t, 0, 1, (i*2+1)/(splines.length*2-1), (i*2+2)/(splines.length*2-1));
+          return color(
+            (nt*360+230)%360, 
+            65 + 15 * sin(nt * TWO_PI * 6 + PI), 
+            100 - 10 * cos(nt * PI * 9))
+        }
+      })
+    }
+  }
+
+  for (let i = 0; i < splines.length; i++) {
     if (splines[i].active) {
       drawAnchors(
         createVector(mouseX, mouseY),

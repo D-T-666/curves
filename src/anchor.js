@@ -38,10 +38,10 @@ function drawAnchors(mouse, pmouse, anchors, vars) {
 	
 	for (let i = 0; i < anchors.length; i++) {
 		if (i < anchors.length - 1) {
-			if (vars.new_anchor_index === i && !mouse_on_anchor)
-				stroke(100, 255, 100, 130);
-			else
-				stroke(255, 110);
+			// if (vars.new_anchor_index === i && !mouse_on_anchor)
+			// 	stroke(100, 255, 100, 130);
+			// else
+				stroke(colors.fg);
 			strokeWeight(1);
 			
 			line(
@@ -55,7 +55,7 @@ function drawAnchors(mouse, pmouse, anchors, vars) {
 		push();
 		
 		noStroke();
-		fill(255)
+		fill(colors.fg)
 		
 		translate(anchors[i].x, anchors[i].y);
 		if (vars.hovering === i) {
@@ -66,7 +66,7 @@ function drawAnchors(mouse, pmouse, anchors, vars) {
 			rect(-r * 0.75 - 3, -r * 0.75 - 3, r * 1.5 + 6, r * 1.5 + 6);
 
 			noStroke();
-			fill(255);
+			fill(colors.fg);
 			if (vars.click_timer > 0 && vars.last_clicked_index === i)
 				fill(255, 70, 50); 
 			rect(-r * 0.75, -r * 0.75, r * 1.5, r * 1.5);

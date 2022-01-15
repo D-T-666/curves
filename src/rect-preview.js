@@ -1,5 +1,5 @@
 function drawPreviewWindow(spline) {
-    stroke(255);
+    stroke(colors.fg);
     strokeWeight(1);
     noFill();
     // fill(255, 127);
@@ -12,7 +12,9 @@ function drawPreviewWindow(spline) {
     drawSpline(anchors, 100, {
         t: 14,
         s: 1,
-        fill: colors.bg,
-        stroke: color(255)
+        fill: (t) => (
+            color(t*127+127, t*100 + (1-t)*50, (1-t)*127+127)
+        ),
+        stroke: color(0,0)
     })
 }

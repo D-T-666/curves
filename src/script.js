@@ -1,53 +1,88 @@
 const ui = {
+    createToolBoxButton: (text, click_event_listener) => {
+        let button = document.createElement("button");
+        button.innerText = text;
+        button.classList.add(text);
+
+        if (click_event_listener)
+            button.addEventListener("click", click_event_listener);
+
+        return button;
+    },
+
+    createSplineListingToolboxRightPane: (i) => {
+        let right_pane = document.createElement("div");
+        right_pane.classList.add("right");
+
+        if (i > 0)
+            right_pane.appendChild(
+                ui.createToolBoxButton("up", (e) => {
+                    [ splines[i], splines[i-1] ] = [ splines[i-1], splines[i] ];
+                    saveToLocalStorage();
+                    location.reload();
+                })
+            );
+
+        right_pane.appendChild(
+            ui.createToolBoxButton("reverse", (e) => {
+                splines[i].shape = splines[i].shape.reverse();
+                saveToLocalStorage();
+            })
+        );
+
+        if (i < splines.length-1)
+            right_pane.appendChild(
+                ui.createToolBoxButton("down", (e) => {
+                    [ splines[i], splines[i+1] ] = [ splines[i+1], splines[i] ];
+                    saveToLocalStorage();
+                    location.reload();
+                })
+            );
+        
+        return right_pane;
+    },
+
+    createSplineListingToolboxLeftPane: (i) => {
+        let left_pane = document.createElement("div");
+        left_pane.classList.add("left");
+
+        left_pane.appendChild(
+            ui.createToolBoxButton("delete", (e) => {
+                splines.splice(i, 1);
+                saveToLocalStorage();
+                location.reload();
+            })
+        );
+
+        left_pane.appendChild(
+            ui.createToolBoxButton("duplicate", (e) => {
+                splines.splice(i, 0, splines[i]);
+                saveToLocalStorage();
+                location.reload();
+            })
+        );
+        
+        return left_pane;
+    },
+
     createSplineListingToolbox: (i) => {
         // Tool box div
         let p = document.createElement("div");
         p.classList.add("tool-box");
 
-        // up button
-        let a = document.createElement("button");
-        a.classList.add("up");
-        a.innerText = "up";
-
-        // reverse button
-        let b = document.createElement("button");
-        b.classList.add("re");
-        b.innerText = "reverse";
-        
-        // up button
-        let c = document.createElement("button");
-        c.classList.add("dw");
-        c.innerText = "down";
-
-
-        a.addEventListener("click", (e) => {
-            [ splines[i], splines[i-1] ] = [ splines[i-1], splines[i] ];
-            saveToLocalStorage();
-            location.reload();
-            // let q = document.getElementById(`spline-${i}`);
-            // let p = document.getElementById(`spline-${i-1}`);
-            // document.getElementById("overlay").removeChild(q);
-            // document.getElementById("overlay").insertBefore(q, p);
-        }, false);
-
-        b.addEventListener("click", (e) => {
-            splines[i].shape = splines[i].shape.reverse();
-            saveToLocalStorage();
-        })
-
-        c.addEventListener("click", (e) => {
-            [ splines[i], splines[i+1] ] = [ splines[i+1], splines[i] ];
-            saveToLocalStorage();
-            location.reload();
-        }, false);
-        
-
-
-        if (i > 0) p.appendChild(a);
-        p.appendChild(b);
-        if (i < splines.length-1) p.appendChild(c);
+        p.appendChild(ui.createSplineListingToolboxLeftPane(i));
+        p.appendChild(ui.createSplineListingToolboxRightPane(i));
 
         return p;
+    },
+
+    createSplineListingTitle: (title, change_event_listener) => {
+        let listing_title = document.createElement("textarea");
+        listing_title.value = title;
+
+        listing_title.addEventListener("change", change_event_listener);
+
+        return listing_title;
     },
 
     createSplinelisting: (i) => {
@@ -65,27 +100,20 @@ const ui = {
                     document.getElementById(`spline-${k}`).classList.remove("active")
                 }
             splines[i].active = true;
-            document.getElementById(`spline-${i}`).classList.add("active"), false
+            document.getElementById(`spline-${i}`).classList.add("active");
         })
-
-        // The title of the spline
-        let listing_title = document.createElement("textarea");
-        listing_title.value = splines[i].name ? splines[i].name : `spline #${i+1}`;
-        // listing_title.cols = 15;
-
-        listing_title.addEventListener("change", (e) => {
-            splines[i].name = e.target.value;
-            saveToLocalStorage()
-            console.log(e)
-        })
-
-        // Tool box
-        let tool_box = ui.createSplineListingToolbox(i);
-
 
         // assemble elements together
-        listing_div.appendChild(listing_title);
-        listing_div.appendChild(tool_box);
+        listing_div.appendChild(
+            ui.createSplineListingTitle(
+                splines[i].name || `spline #${i+1}`,
+                (e) => {
+                    splines[i].name = e.target.value;
+                    saveToLocalStorage();
+                }
+            )
+        );
+        listing_div.appendChild(ui.createSplineListingToolbox(i));
 
         return listing_div;
     },
@@ -119,7 +147,6 @@ const ui = {
 
             location.reload();
         });
-
 
         return new_button;
     }

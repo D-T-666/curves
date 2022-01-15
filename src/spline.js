@@ -1,27 +1,27 @@
 // implements functionality to render splines
 
-function drawSpline(anchors, resolution, vars = {t: 4, s: 2, fill: colors.bg, stroke: color(80, 110, 255)}) {
+function drawSpline(anchors, resolution, vars = {t: 4, s: 2, caps: 3, fill: colors.bg, stroke: color(80, 110, 255)}) {
   // Returns an array with  resolution + 1  elements
   let points = getSpline(anchors, resolution);
   
   let pp1, pp2, t = vars.t, s = vars.s;
 
-  strokeWeight(s);
-  stroke(vars.stroke);
-  noFill();
-  arc(points[0].x, points[0].y, t, t, points[1].copy().sub(points[0]).normalize().heading() + HALF_PI, points[1].copy().sub(points[0]).normalize().heading() - HALF_PI)
+  if (vars.caps & 1) {
+    if (vars.stroke instanceof Function)
+      stroke(vars.stroke(0))
+    else
+      stroke(vars.stroke);
+    strokeWeight(s);
+    noFill();
+    arc(points[0].x, points[0].y, t, t, points[1].copy().sub(points[0]).normalize().heading() + HALF_PI, points[1].copy().sub(points[0]).normalize().heading() - HALF_PI)
+  }
     
   for (let i = 0; i < resolution; i++) {
-    colorMode(HSB, 360);
-    // stroke(map(i, 0, resolution, 192, 255), map(i, 0, resolution, 128, 255), map(i, 0, resolution, 255, 192));
-    // stroke(map(i, 0, resolution, 224, 255), map(i, 0, resolution, 96, 208), map(i, 0, resolution, 224, 128));
-    // stroke(map(i, 0, resolution, 96, 208), map(i, 0, resolution, 224, 128), map(i, 0, resolution, 224, 255));
-    // stroke(60, 50, 255);
-    // stroke(
-    //   map(i, 0, resolution, 180, 310), 
-    //   360*(sin(map(i, 0, resolution, 0, 4*TWO_PI))*0.1 + 0.45), 
-    //   360*(sin(map(i, 0, resolution, 0, 4*TWO_PI))*-0.1 + 0.95))
-    stroke(vars.fill);
+    colorMode(HSB);
+    if (vars.fill instanceof Function)
+      stroke(vars.fill(i / (resolution)))
+    else
+      stroke(vars.fill);
     strokeWeight(t-s);
     line(
       points[i].x,
@@ -42,7 +42,10 @@ function drawSpline(anchors, resolution, vars = {t: 4, s: 2, fill: colors.bg, st
     p2.add(points[i]);
 
     strokeWeight(s);
-    stroke(vars.stroke);
+    if (vars.stroke instanceof Function)
+      stroke(vars.stroke(i / (resolution)))
+    else
+      stroke(vars.stroke);
     // line(
     //   points[i].x,
     //   points[i].y,
@@ -67,6 +70,7 @@ function drawSpline(anchors, resolution, vars = {t: 4, s: 2, fill: colors.bg, st
   line(p2.x, p2.y, pp2.x, pp2.y);
 
   noFill();
+  if (vars.caps & 2)
   arc(points[resolution].x, points[resolution].y, t, t, points[resolution].copy().sub(points[resolution-1]).normalize().heading() - HALF_PI, points[resolution].copy().sub(points[resolution-1]).normalize().heading() + HALF_PI)
 
 }
