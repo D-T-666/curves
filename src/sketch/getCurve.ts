@@ -13,9 +13,9 @@ export const getCurve = (p: p5, b: Bezier, resolution?: number): p5.Vector[] => 
     for (let i = 0; i < used_resolution + 1; i++) {
         let a = [...b._anchors];
         
-        for (let p = b._anchors.length; p >= 0; p--) {
-            for (let q = 0; q < p - 1; q++) {
-                a[q] = p5.Vector.lerp(a[q], a[q+1], i / used_resolution);
+        for (let j = b._anchors.length; j >= 0; j--) {
+            for (let q = 0; q < j - 1; q++) {
+                a[q] = p.createVector(p.lerp(a[q].x, a[q+1].x, i / used_resolution), p.lerp(a[q].y, a[q+1].y, i / used_resolution));
             }
         }
         
