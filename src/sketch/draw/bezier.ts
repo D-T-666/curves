@@ -28,7 +28,7 @@ export const drawBezierCurve = (p: p5, b: Bezier, dp?: bezierDrawParams | boolea
             // _fill: p.color(255),
             _stroke_weight: 0,
             _fill_weight: 4,
-            _draw_caps: 3
+            _draw_caps: 15
         };
     
     let resolution = used_dp._resolution;

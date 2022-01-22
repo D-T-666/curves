@@ -2,6 +2,7 @@ import p5 = require("p5");
 import { Bezier, createBezier } from "./bezier";
 import { drawBezierAnchors } from "./draw/anchors";
 import { drawBezierCurve } from "./draw/bezier";
+import { interactAnchors } from "./interact/anchors";
 
 export class Scene {
     _beziers: Bezier[];
@@ -22,24 +23,24 @@ export class Scene {
         this._beziers[0]._draw_params = {
             _resolution: 100,
             _fill: (t: number): p5.Color => {
-                let b = this._p5.abs(this._p5.abs(this._p5.sin(t*this._p5.TWO_PI * 3 + this._p5.frameCount * 0.05)) * 0.5) + 0.5;
+                let b = this._p5.abs(this._p5.abs(this._p5.sin(t*this._p5.TWO_PI * 1 + this._p5.frameCount * 0.05)) * 0.5) + 0.5;
                 return this._p5.color((t * 127 + 127) * b, 127 * b, (1 - t) * 255 * b);
             },
-            _stroke: this._p5.color(255),
+            _stroke: this._p5.color(240, 180, 40),
             _fill_weight:
              (t: number): number => {
-                return this._p5.abs(this._p5.abs(this._p5.sin(t*this._p5.TWO_PI * 3 + this._p5.frameCount * 0.05)) * 16 + 0);
+                return this._p5.abs(this._p5.abs(this._p5.sin(t*this._p5.TWO_PI * 1 + this._p5.frameCount * 0.05)) * 16 + 0);
             },
             _stroke_weight: 1,
-            _draw_caps: 3,
+            _draw_caps: 0,
         };
     }
 
     draw() {
         this._p5.background(this._colors.bg);
 
-        let mouse = this._p5.createVector(this._p5.mouseX, this._p5.mouseY);
-        let pmouse = this._p5.createVector(this._p5.pmouseX, this._p5.pmouseY);
+        const mouse = this._p5.createVector(this._p5.mouseX, this._p5.mouseY);
+        const pmouse = this._p5.createVector(this._p5.pmouseX, this._p5.pmouseY);
 
         for (let i = 0; i < this._beziers.length; i++) {
             drawBezierAnchors(this._p5, this._beziers[i], mouse, pmouse, this._colors);
@@ -48,6 +49,11 @@ export class Scene {
     }
 
     interact() {
+        const mouse = this._p5.createVector(this._p5.mouseX, this._p5.mouseY);
+        const pmouse = this._p5.createVector(this._p5.pmouseX, this._p5.pmouseY);
 
+        for (let i = 0; i < this._beziers.length; i++) {
+            interactAnchors(this._p5, this._beziers[i], mouse, pmouse);
+        }
     }
 }
