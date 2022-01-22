@@ -1,6 +1,6 @@
 #!/bin/bash
 
-toilet --metal Curves
+toilet -F border --gay Curves
 
 npm i
 npm run build
