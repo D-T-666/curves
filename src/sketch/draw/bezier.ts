@@ -23,11 +23,10 @@ export const drawBezierCurve = (p: p5, b: Bezier, dp?: bezierDrawParams | boolea
     else
         used_dp = {
             _resolution: 25,
-            _stroke: p.color(0,0),
-            _fill: p.color(112, 226, 255),
-            // _fill: p.color(255),
-            _stroke_weight: 0,
-            _fill_weight: 4,
+            _stroke: p.color(112, 226, 255, 110),
+            _fill: p.color(112, 226, 255, 110),
+            _stroke_weight: 2,
+            _fill_weight: 10,
             _draw_caps: 15
         };
     

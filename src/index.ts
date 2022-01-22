@@ -15,8 +15,9 @@ new p5((p: p5): void => {
     }
 
     p.draw = (): void => {
-        main_scene.draw();
         main_scene.interact();
+
+        main_scene.draw();
 
         p.noStroke();
         p.fill(255, 0, 0);

@@ -6,21 +6,6 @@ export const drawBezierAnchors = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: p5
 	
 	let smallest_distance = Infinity;
 
-	let bb = getBoundingBox(p, b._anchors);
-    bb.p1.mult(b._size).add(b._pos);
-    bb.p2.mult(b._size).add(b._pos);
-    
-	p.stroke(colors.fg);
-	p.strokeWeight(1);
-	p.fill(colors.bgd);
-	p.rect(bb.p1.x - r * 2, bb.p1.y - r * 2, bb.p2.x - bb.p1.x + r * 4, bb.p2.y - bb.p1.y + r * 4);
-
-	p.fill(colors.bg);
-	p.rect(bb.p1.x - r * 2.5, bb.p1.y - r * 2.5, r, r);
-	p.rect(bb.p2.x + r * 1.5, bb.p1.y - r * 2.5, r, r);
-	p.rect(bb.p1.x - r * 2.5, bb.p2.y + r * 1.5, r, r);
-	p.rect(bb.p2.x + r * 1.5, bb.p2.y + r * 1.5, r, r);
-
 	let mouse_on_anchor = false;
     let hovering = -1;
 
