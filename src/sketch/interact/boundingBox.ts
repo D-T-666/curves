@@ -6,21 +6,19 @@ import { getCurve } from "../getCurve";
 export const interactBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: p5.Vector, interaction_vars: any) => {
     const r = 6;
 
-    let { p1, p2 } = getBoundingBox(p, getCurve(p, b._anchors, 15, {
+    let bb = getBoundingBox(p, getCurve(p, b._anchors, 15, {
         offset: b._pos,
         scale: b._size
-    }));
+    }), true);
 
     let cs = [
-        p.createVector(p1.x - r * 2, p1.y - r * 2),
-        p.createVector(p2.x + r * 2, p1.y - r * 2),
-        p.createVector(p1.x - r * 2, p2.y + r * 2),
-        p.createVector(p2.x + r * 2, p2.y + r * 2)
+        p.createVector(bb.p1.x - r * 2, bb.p1.y - r * 2),
+        p.createVector(bb.p2.x + r * 2, bb.p1.y - r * 2),
+        p.createVector(bb.p1.x - r * 2, bb.p2.y + r * 2),
+        p.createVector(bb.p2.x + r * 2, bb.p2.y + r * 2)
     ];
 
-    let rot_anchor = cs[0].copy().add(cs[1]).div(2);
-    rot_anchor.y -= r * 2;
-    let bbc = cs[0].copy().add(cs[3]).div(2);
+    let rot_anchor = bb.c.copy().sub(p.createVector(0, bb.r + r * 2));
 
     let hovering = -1;
     if (interaction_vars.pmouseIsPressed && interaction_vars.grabbed >= 0) {
@@ -53,23 +51,23 @@ export const interactBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: 
             switch (hovering & 3) {
                 case 0:
                     d = (cs[3].y - mouse.y) / (cs[3].y - pmouse.y);
-                    s = d + 4 * r * (d - 1) / (p2.y - p1.y - 4 * r);
-                    b._pos.y -= (s - 1) * (p2.y - b._pos.y);
+                    s = d + 4 * r * (d - 1) / (bb.p2.y - bb.p1.y - 4 * r);
+                    b._pos.y -= (s - 1) * (bb.p2.y - b._pos.y);
                     break;
                 case 1: 
                     d = (cs[0].x - mouse.x) / (cs[0].x - pmouse.x);
                     s = d + 4 * r * (d - 1) / (cs[3].x - cs[0].x - 4 * r);
-                    b._pos.x -= (s - 1) * (p1.x - b._pos.x);
+                    b._pos.x -= (s - 1) * (bb.p1.x - b._pos.x);
                     break;
                 case 2: 
                     d = (cs[0].y - mouse.y) / (cs[0].y - pmouse.y);
                     s = d + 4 * r * (d - 1) / (cs[3].y - cs[0].y - 4 * r);
-                    b._pos.y -= (s - 1) * (p1.y - b._pos.y);
+                    b._pos.y -= (s - 1) * (bb.p1.y - b._pos.y);
                     break;
                 case 3:
                     d = (cs[3].x - mouse.x) / (cs[3].x - pmouse.x);
                     s = d + 4 * r * (d - 1) / (cs[3].x - cs[0].x - 4 * r);
-                    b._pos.x -= (s - 1) * (p2.x - b._pos.x);
+                    b._pos.x -= (s - 1) * (bb.p2.x - b._pos.x);
                     break;
             }
             if ((hovering & 1) === 0) b._anchors.forEach(a => a.y *= s);
@@ -84,19 +82,17 @@ export const interactBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: 
             
             b._size *= d;
         }
-        if (hovering === 9) {
-            if (interaction_vars.pmouseIsPressed) {
-                b._new_anchors = b._anchors.map((a: p5.Vector) => a.copy().rotate(bbc.copy().sub(mouse).heading() - p.HALF_PI));
-                b._new_pos = b._pos.copy().add(bbc.copy().sub(b._pos).sub(bbc.copy().sub(b._pos).rotate(bbc.copy().sub(mouse).heading() - p.HALF_PI)));
-            }
-        }
-        b._new_anchors = b._anchors.map((a: p5.Vector) => a.copy().rotate(bbc.copy().sub(mouse).heading() - p.HALF_PI));
-        b._new_pos = b._pos.copy().add(bbc.copy().sub(b._pos).sub(bbc.copy().sub(b._pos).rotate(bbc.copy().sub(mouse).heading() - p.HALF_PI)));
+        // if (hovering === 9) {
+        //     if (interaction_vars.pmouseIsPressed) {
+                b._new_anchors = b._anchors.map((a: p5.Vector) => a.copy().rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI));
+                b._new_pos = b._pos.copy().add(bb.c.copy().sub(b._pos).sub(bb.c.copy().sub(b._pos).rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI)));
+        //     }
+        // }
     } else {
         if (hovering === 9) {
             if (interaction_vars.pmouseIsPressed) {
-                b._anchors.forEach(a => a.rotate(bbc.copy().sub(mouse).heading() - p.HALF_PI));
-                b._pos.add(bbc.copy().sub(b._pos).sub(bbc.copy().sub(b._pos).rotate(bbc.copy().sub(mouse).heading() - p.HALF_PI)));
+                b._anchors = b._new_anchors;
+                b._pos = b._new_pos;
             }
         }
     }

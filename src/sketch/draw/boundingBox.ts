@@ -6,18 +6,11 @@ import { getCurve } from "../getCurve";
 export const drawBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: p5.Vector, colors: any, interaction_vars: any) => {
     const r = 6;
 
-    let bb: BoundingBox;
+    let bb = getBoundingBox(p, getCurve(p, b._anchors, 15, {
+        offset: b._pos,
+        scale: b._size
+    }), true);
 
-    if (interaction_vars.grabbed === 9 && p.mouseIsPressed)
-        bb = getBoundingBox(p, getCurve(p, b._new_anchors, 15, {
-            offset: b._new_pos,
-            scale: b._size
-        }), true);
-    else
-        bb = getBoundingBox(p, getCurve(p, b._anchors, 15, {
-            offset: b._pos,
-            scale: b._size
-        }), true);
     let overscan = p.createVector(r*2, r*2);
     bb.p1.sub(overscan).sub(bb.c);
     bb.p2.add(overscan).sub(bb.c);
@@ -121,15 +114,17 @@ export const drawBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: p5.V
 
     if (interaction_vars.grabbed === 9 && p.mouseIsPressed) {
         p.rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI);
-    }
+    } else
+        p.line(0,  c1.y - r * ((interaction_vars.grabbed === 4) ? 1 : 0.5), 
+               0, -bb.r + r * ((interaction_vars.grabbed === 9) ? 1 : 0.5));
 
     if (interaction_vars.grabbed === 9) {
         p.fill(colors.bgd);
-        p.rect(-r, c1.y - r * 3, r * 2, r * 2);
+        p.rect(-r, -bb.r - r, r * 2, r * 2);
         p.cursor("move");
     } else {
         p.fill(colors.bg);
-        p.rect(-r * 0.5, c1.y - r * 2.5, r, r);
+        p.rect(-r * 0.5, - bb.r - r / 2, r, r);
     }
 
     p.pop();
