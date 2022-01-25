@@ -33,12 +33,12 @@ export class Scene {
             _resolution: 100,
             _fill: (t: number): p5.Color => {
                 let b = this._p5.abs(this._p5.abs(this._p5.sin(t*this._p5.TWO_PI * 1 + this._p5.frameCount * 0.05)) * 0.5) + 0.5;
-                return this._p5.color((t * 127 + 127) * b, 127 * b, (1 - t) * 255 * b, 40);
+                return this._p5.color((t * 127 + 127) * b, 127 * b, (1 - t) * 255 * b);
             },
             _stroke: this._p5.color(255),//240, 180, 40),
             _fill_weight:
              (t: number): number => {
-                return this._p5.abs(this._p5.abs(this._p5.sin(t*this._p5.TWO_PI * 1 + this._p5.frameCount * 0.05)) * 16 + 0);
+                return 32;//this._p5.abs(this._p5.abs(this._p5.sin(t*this._p5.TWO_PI * 1 + this._p5.frameCount * 0.05)) * 16 + 0);
             },
             _stroke_weight: 1,
             _draw_caps: 0,
@@ -62,7 +62,7 @@ export class Scene {
                     break;
                 } 
             }
-            drawBezierCurve(this._p5, this._beziers[i], false);
+            drawBezierCurve(this._p5, this._beziers[i], this._interaction_vars, false);
         }
     }
 

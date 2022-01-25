@@ -6,7 +6,10 @@ import { getCurve } from "../getCurve";
 export const interactBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: p5.Vector, interaction_vars: any) => {
     const r = 6;
 
-    let { p1, p2 } = getBoundingBox(p, getCurve(p, b, 15));
+    let { p1, p2 } = getBoundingBox(p, getCurve(p, b._anchors, 15, {
+        offset: b._pos,
+        scale: b._size
+    }));
 
     let cs = [
         p.createVector(p1.x - r * 2, p1.y - r * 2),
@@ -14,6 +17,10 @@ export const interactBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: 
         p.createVector(p1.x - r * 2, p2.y + r * 2),
         p.createVector(p2.x + r * 2, p2.y + r * 2)
     ];
+
+    let rot_anchor = cs[0].copy().add(cs[1]).div(2);
+    rot_anchor.y -= r * 2;
+    let bbc = cs[0].copy().add(cs[3]).div(2);
 
     let hovering = -1;
     if (interaction_vars.pmouseIsPressed && interaction_vars.grabbed >= 0) {
@@ -30,14 +37,17 @@ export const interactBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: 
 
         if (hovering < 0 && pmouse.x > cs[0].x && pmouse.x < cs[3].x && pmouse.y > cs[0].y && pmouse.y < cs[3].y)
             hovering = 8;
+
+        if (hovering < 0 && pmouse.x > rot_anchor.x - r && pmouse.x < rot_anchor.x + r && pmouse.y > rot_anchor.y - r && pmouse.y < rot_anchor.y + r)
+            hovering = 9;
     }
     interaction_vars.grabbed = hovering;
 
-    if (hovering >= 0 && p.mouseIsPressed) {
+    if (p.mouseIsPressed) {
         let mouse_delta = mouse.copy().sub(pmouse);
         if (hovering === 8) {
             b._pos.add(mouse_delta);
-        } else if (hovering > 3) {
+        } else if (hovering < 8 && hovering > 3) {
             let d: number;
             let s: number;
             switch (hovering & 3) {
@@ -64,7 +74,7 @@ export const interactBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: 
             }
             if ((hovering & 1) === 0) b._anchors.forEach(a => a.y *= s);
             else b._anchors.forEach(a => a.x *= s);
-        } else {
+        } else if (hovering <= 3 && hovering >= 0) {
             let c = cs[3 - hovering];
 
             let d = p5.Vector.dist(mouse, c) / p5.Vector.dist(pmouse, c);
@@ -73,6 +83,21 @@ export const interactBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: 
             b._pos.x += (b._pos.x - c.x - r * 2 * (2 * Number((hovering & 1) !== 0) - 1)) * (d - 1);
             
             b._size *= d;
+        }
+        if (hovering === 9) {
+            if (interaction_vars.pmouseIsPressed) {
+                b._new_anchors = b._anchors.map((a: p5.Vector) => a.copy().rotate(bbc.copy().sub(mouse).heading() - p.HALF_PI));
+                b._new_pos = b._pos.copy().add(bbc.copy().sub(b._pos).sub(bbc.copy().sub(b._pos).rotate(bbc.copy().sub(mouse).heading() - p.HALF_PI)));
+            }
+        }
+        b._new_anchors = b._anchors.map((a: p5.Vector) => a.copy().rotate(bbc.copy().sub(mouse).heading() - p.HALF_PI));
+        b._new_pos = b._pos.copy().add(bbc.copy().sub(b._pos).sub(bbc.copy().sub(b._pos).rotate(bbc.copy().sub(mouse).heading() - p.HALF_PI)));
+    } else {
+        if (hovering === 9) {
+            if (interaction_vars.pmouseIsPressed) {
+                b._anchors.forEach(a => a.rotate(bbc.copy().sub(mouse).heading() - p.HALF_PI));
+                b._pos.add(bbc.copy().sub(b._pos).sub(bbc.copy().sub(b._pos).rotate(bbc.copy().sub(mouse).heading() - p.HALF_PI)));
+            }
         }
     }
 }

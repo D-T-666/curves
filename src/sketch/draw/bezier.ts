@@ -13,8 +13,19 @@ export interface bezierDrawParams {
     _draw_caps?: number,
 }
 
-export const drawBezierCurve = (p: p5, b: Bezier, dp?: bezierDrawParams | boolean) => {
+export const drawBezierCurve = (p: p5, b: Bezier, interaction_vars: any, dp?: bezierDrawParams | boolean) => {
     let used_dp: bezierDrawParams;
+
+    let anchors_to_use: p5.Vector[];
+    let offset_to_use: p5.Vector
+
+    if (interaction_vars.pmouseIsPressed && interaction_vars.grabbed === 9) {
+        anchors_to_use = b._new_anchors;
+        offset_to_use = b._new_pos;
+    } else {
+        anchors_to_use = b._anchors;
+        offset_to_use = b._pos;
+    }
 
     if (dp instanceof Object)
         used_dp = dp;
@@ -32,7 +43,10 @@ export const drawBezierCurve = (p: p5, b: Bezier, dp?: bezierDrawParams | boolea
     
     let resolution = used_dp._resolution;
 
-    let curve = getCurve(p, b, resolution);
+    let curve = getCurve(p, anchors_to_use, resolution, {
+        offset: offset_to_use,
+        scale: b._size
+    });
 
     if (used_dp._draw_caps && used_dp._draw_caps & 1) {
         drawLineCap(p, used_dp, curve[0], curve[1], 0, (used_dp._draw_caps & 4) !== 0);
