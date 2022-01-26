@@ -1,5 +1,4 @@
 const path = require('path');
-const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: './src/index.ts',
@@ -12,15 +11,6 @@ module.exports = {
     concatenateModules: true,
     innerGraph: false,
     mangleExports: "size",
-    minimize: false,
-    minimizer: [
-      new TerserPlugin({
-        parallel: true,
-        terserOptions: {
-          // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
-        },
-      }),
-    ],
   },
   module: {
     rules: [
