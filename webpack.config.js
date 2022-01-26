@@ -1,10 +1,26 @@
 const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: './src/index.ts',
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   externals: {
     p5: 'p5'
+  },
+  optimization: {
+    chunkIds: "total-size",
+    concatenateModules: true,
+    innerGraph: false,
+    mangleExports: "size",
+    minimize: false,
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+        },
+      }),
+    ],
   },
   module: {
     rules: [
