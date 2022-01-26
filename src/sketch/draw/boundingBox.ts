@@ -1,5 +1,5 @@
 import p5 = require("p5");
-import { BoundingBox, getBoundingBox } from "../../utils/points";
+import { getBoundingBox } from "../../utils/points";
 import { Bezier } from "../bezier";
 import { getCurve } from "../getCurve";
 
@@ -11,7 +11,7 @@ export const drawBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: p5.V
         scale: b._size
     }), true);
 
-    let overscan = p.createVector(r*2, r*2);
+    let overscan = p.createVector(r * 2, r * 2);
     bb.p1.sub(overscan).sub(bb.c);
     bb.p2.add(overscan).sub(bb.c);
     bb.r += r * 2 * p.sqrt(2);
@@ -44,14 +44,10 @@ export const drawBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: p5.V
             if (interaction_vars.grabbed === i) {
                 p.fill(colors.bgd);
                 p.rect(c.x - r, c.y - r, r * 2, r * 2);
-                if (i < 4 && (i & 1) === (i & 2) / 2)
-                    p.cursor("nwse-resize");
-                else if (i < 4)
-                    p.cursor("nesw-resize");
-                else if (i < 8 && i % 2 === 0)
-                    p.cursor("ns-resize");
+                if (i < 4)
+                    p.cursor((i & 1) === (i & 2) / 2 ? "nwse-resize" : "nesw-resize");
                 else if (i < 8)
-                    p.cursor("ew-resize");
+                    p.cursor(i < 8 && i % 2 === 0 ? "ns-resize" : "ew-resize");
             } else {
                 p.fill(colors.bg);
                 p.rect(c.x - r * 0.5, c.y - r * 0.5, r, r);

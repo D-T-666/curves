@@ -45,6 +45,7 @@ export const interactBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: 
         let mouse_delta = mouse.copy().sub(pmouse);
         if (hovering === 8) {
             b._pos.add(mouse_delta);
+            
         } else if (hovering < 8 && hovering > 3) {
             let d: number;
             let s: number;
@@ -83,17 +84,12 @@ export const interactBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: 
             b._size *= d;
         }
         if (hovering === 9) {
-        //     if (interaction_vars.pmouseIsPressed) {
-                b._new_anchors = b._anchors.map((a: p5.Vector) => a.copy().rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI));
-                b._new_pos = b._pos.copy().add(bb.c.copy().sub(b._pos).sub(bb.c.copy().sub(b._pos).rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI)));
-        //     }
-        }
-
-        if (interaction_vars.doubleClicked) {
-            if (hovering === 8)
-                interaction_vars.change_mode = true;
+            b._new_anchors = b._anchors.map((a: p5.Vector) => a.copy().rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI));
+            b._new_pos = b._pos.copy().add(bb.c.copy().sub(b._pos).sub(bb.c.copy().sub(b._pos).rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI)));
         }
     } else {
+        if (hovering === 8)
+            interaction_vars.change_mode = interaction_vars.doubleClicked;
         if (hovering === 9) {
             if (interaction_vars.pmouseIsPressed) {
                 b._anchors = b._new_anchors;

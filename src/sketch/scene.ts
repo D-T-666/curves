@@ -83,9 +83,9 @@ export class Scene {
             }
         }
 
-        if (this._interaction_vars.doubleClicked) {
-            this._interaction_vars.change_mode = false;
+        if (this._interaction_vars.change_mode) {
             this._active_bezier_mode = 1 - this._active_bezier_mode;
+            this._interaction_vars.change_mode = false;
         }
 
         this._interaction_vars.pmouseIsPressed = this._p5.mouseIsPressed;
@@ -93,7 +93,6 @@ export class Scene {
     }
 
     doubleClicked() {
-        console.log("GAY?");
         this._interaction_vars.doubleClicked = true;
     }
 }
