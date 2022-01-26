@@ -21,6 +21,10 @@ new p5((p: p5): void => {
 
         p.noStroke();
         p.fill(255, 0, 0);
-        p.text(p.round(p.frameRate()), 0, 10);
+        p.text(`double click to switch modes. fps:${p.round(p.frameRate())}`, 0, 10);
+    }
+
+    p.doubleClicked = (): void => {
+        main_scene.doubleClicked();
     }
 });

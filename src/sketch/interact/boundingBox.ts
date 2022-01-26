@@ -88,6 +88,11 @@ export const interactBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: 
                 b._new_pos = b._pos.copy().add(bb.c.copy().sub(b._pos).sub(bb.c.copy().sub(b._pos).rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI)));
         //     }
         }
+
+        if (interaction_vars.doubleClicked) {
+            if (hovering === 8)
+                interaction_vars.change_mode = true;
+        }
     } else {
         if (hovering === 9) {
             if (interaction_vars.pmouseIsPressed) {
