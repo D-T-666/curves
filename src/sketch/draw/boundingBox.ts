@@ -16,10 +16,12 @@ export const drawBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: p5.V
     bb.p2.add(overscan).sub(bb.c);
     bb.r += r * 2 * p.sqrt(2);
 
-    let c1 = p.createVector(bb.p1.x, bb.p1.y);
-    let c2 = p.createVector(bb.p2.x, bb.p1.y);
-    let c3 = p.createVector(bb.p1.x, bb.p2.y);
-    let c4 = p.createVector(bb.p2.x, bb.p2.y);
+    let cs = [
+        p.createVector(bb.p1.x, bb.p1.y),
+        p.createVector(bb.p2.x, bb.p1.y),
+        p.createVector(bb.p1.x, bb.p2.y),
+        p.createVector(bb.p2.x, bb.p2.y)
+    ];
 
     p.push();
     p.translate(bb.c.x, bb.c.y);
@@ -30,93 +32,39 @@ export const drawBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: p5.V
 
     p.cursor("default")
 
-    if (interaction_vars.grabbed === 9 && p.mouseIsPressed)
+    if (interaction_vars.grabbed === 9 && p.mouseIsPressed) {
         p.ellipse(0, 0, bb.r * 2, bb.r * 2);
-    else {
-        p.rect(c1.x, c1.y, c4.x - c1.x, c4.y - c1.y);
+        p.rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI);
+    } else {
+        p.rect(bb.p1.x, bb.p1.y, bb.p2.x - bb.p1.x, bb.p2.y - bb.p1.y);
 
-        if (interaction_vars.grabbed === 0) {
-            p.fill(colors.bgd);
-            p.rect(c1.x - r, c1.y - r, r * 2, r * 2);
-            p.cursor("nwse-resize");
-        } else {
-            p.fill(colors.bg);
-            p.rect(c1.x - r * 0.5, c1.y - r * 0.5, r, r);
-        }
+        for (let i = 0; i < 8; i++) {
+            let c = i < 4 ? cs[i] : cs[[0, 1, 3, 2][i - 4]].copy().add(cs[[1, 3, 2, 0][i - 4]]).div(2);
 
-        if (interaction_vars.grabbed === 1) {
-            p.fill(colors.bgd);
-            p.rect(c2.x - r, c2.y - r, r * 2, r * 2);
-            p.cursor("nesw-resize");
-        } else {
-            p.fill(colors.bg);
-            p.rect(c2.x - r * 0.5, c2.y - r * 0.5, r, r);
-        }
-        
-        if (interaction_vars.grabbed === 2) {
-            p.fill(colors.bgd);
-            p.rect(c3.x - r, c3.y - r, r * 2, r * 2);
-            p.cursor("nesw-resize");
-        } else {
-            p.fill(colors.bg);
-            p.rect(c3.x - r * 0.5, c3.y - r * 0.5, r, r);
-        }
-
-        if (interaction_vars.grabbed === 3) {
-            p.fill(colors.bgd);
-            p.rect(c4.x - r, c4.y - r, r * 2, r * 2);
-            p.cursor("nwse-resize");
-        } else {
-            p.fill(colors.bg);
-            p.rect(c4.x - r * 0.5, c4.y - r * 0.5, r, r);
-        }
-
-        if (interaction_vars.grabbed === 4) {
-            p.fill(colors.bgd);
-            p.rect(-r, c1.y - r, r * 2, r * 2);
-            p.cursor("ns-resize");
-        } else {
-            p.fill(colors.bg);
-            p.rect(-r * 0.5, c1.y - r * 0.5, r, r);
-        }
-
-        if (interaction_vars.grabbed === 5) {
-            p.fill(colors.bgd);
-            p.rect(c4.x - r, -r, r * 2, r * 2);
-            p.cursor("ew-resize");
-        } else {
-            p.fill(colors.bg);
-            p.rect(c4.x - r * 0.5, -r * 0.5, r, r);
-        }
-
-        if (interaction_vars.grabbed === 6) {
-            p.fill(colors.bgd);
-            p.rect(-r, c4.y - r, r * 2, r * 2);
-            p.cursor("ns-resize");
-        } else {
-            p.fill(colors.bg);
-            p.rect(-r * 0.5, c4.y - r * 0.5, r, r);
-        }
-
-        if (interaction_vars.grabbed === 7) {
-            p.fill(colors.bgd);
-            p.rect(c1.x - r, -r, r * 2, r * 2);
-            p.cursor("ew-resize");
-        } else {
-            p.fill(colors.bg);
-            p.rect(c1.x - r * 0.5, -r * 0.5, r, r);
+            if (interaction_vars.grabbed === i) {
+                p.fill(colors.bgd);
+                p.rect(c.x - r, c.y - r, r * 2, r * 2);
+                if (i < 4 && (i & 1) === (i & 2) / 2)
+                    p.cursor("nwse-resize");
+                else if (i < 4)
+                    p.cursor("nesw-resize");
+                else if (i < 8 && i % 2 === 0)
+                    p.cursor("ns-resize");
+                else if (i < 8)
+                    p.cursor("ew-resize");
+            } else {
+                p.fill(colors.bg);
+                p.rect(c.x - r * 0.5, c.y - r * 0.5, r, r);
+            }
         }
 
         if (interaction_vars.grabbed === 8) {
             p.cursor("move");
         }
-    }
 
-    if (interaction_vars.grabbed === 9 && p.mouseIsPressed) {
-        p.rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI);
-    } else
-        p.line(0,  c1.y - r * ((interaction_vars.grabbed === 4) ? 1 : 0.5), 
-               0, -bb.r + r * ((interaction_vars.grabbed === 9) ? 1 : 0.5));
+        p.line(0,  bb.p1.y - r * ((interaction_vars.grabbed === 4) ? 1 : 0.5), 
+               0, -bb.r    + r * ((interaction_vars.grabbed === 9) ? 1 : 0.5));
+    }
 
     if (interaction_vars.grabbed === 9) {
         p.fill(colors.bgd);

@@ -18,7 +18,7 @@ export const interactBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: 
         p.createVector(bb.p2.x + r * 2, bb.p2.y + r * 2)
     ];
 
-    let rot_anchor = bb.c.copy().sub(p.createVector(0, bb.r + r * 2));
+    let rot_anchor = bb.c.copy().sub(p.createVector(0, bb.r + r * 3));
 
     let hovering = -1;
     if (interaction_vars.pmouseIsPressed && interaction_vars.grabbed >= 0) {
@@ -82,12 +82,12 @@ export const interactBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: 
             
             b._size *= d;
         }
-        // if (hovering === 9) {
+        if (hovering === 9) {
         //     if (interaction_vars.pmouseIsPressed) {
                 b._new_anchors = b._anchors.map((a: p5.Vector) => a.copy().rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI));
                 b._new_pos = b._pos.copy().add(bb.c.copy().sub(b._pos).sub(bb.c.copy().sub(b._pos).rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI)));
         //     }
-        // }
+        }
     } else {
         if (hovering === 9) {
             if (interaction_vars.pmouseIsPressed) {
