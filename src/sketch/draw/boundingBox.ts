@@ -3,15 +3,12 @@ import { getBoundingBox } from "../../utils/points";
 import { Bezier } from "../bezier";
 import { getCurve } from "../getCurve";
 
-export const drawBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: p5.Vector, colors: any, interaction_vars: any) => {
+export const drawBoundingBox = (p: p5, world_transforms: any, b: Bezier, mouse: p5.Vector, pmouse: p5.Vector, colors: any, interaction_vars: any) => {
     const r = 6;
 
-    let bb = getBoundingBox(p, getCurve(p, b._anchors, 15, {
-        offset: b._pos,
-        scale: b._size
-    }), true);
+    let bb = getBoundingBox(p, getCurve(p, b._anchors, 15, world_transforms.apply), true);
 
-    let overscan = p.createVector(r * 2, r * 2);
+    let overscan = p.createVector(r + b._draw_params._thickness, r + b._draw_params._thickness);
     bb.p1.sub(overscan).sub(bb.c);
     bb.p2.add(overscan).sub(bb.c);
     bb.r += r * 2 * p.sqrt(2);
@@ -28,14 +25,25 @@ export const drawBoundingBox = (p: p5, b: Bezier, mouse: p5.Vector, pmouse: p5.V
 
     p.stroke(colors.fg);
     p.strokeWeight(1);
-    p.fill(colors.bgd);
+    // p.fill(colors.bgd);
+    p.noFill();
 
     p.cursor("default")
 
     if (interaction_vars.grabbed === 9 && p.mouseIsPressed) {
+        p.strokeWeight(r);
+        p.stroke(colors.bgd);
         p.ellipse(0, 0, bb.r * 2, bb.r * 2);
-        p.rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI);
+        p.strokeWeight(1);
+        p.stroke(colors.fg);
+        p.ellipse(0, 0, bb.r * 2, bb.r * 2);
+        p.rotate(world_transforms.unapply(bb.c).sub(mouse).heading() - p.HALF_PI);
     } else {
+        p.strokeWeight(r);
+        p.stroke(colors.bgd);
+        p.rect(bb.p1.x, bb.p1.y, bb.p2.x - bb.p1.x, bb.p2.y - bb.p1.y);
+        p.strokeWeight(1);
+        p.stroke(colors.fg);
         p.rect(bb.p1.x, bb.p1.y, bb.p2.x - bb.p1.x, bb.p2.y - bb.p1.y);
 
         for (let i = 0; i < 8; i++) {

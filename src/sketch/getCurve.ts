@@ -1,7 +1,6 @@
 import * as p5 from "p5";
-import { Bezier } from "./bezier";
 
-export const getCurve = (p: p5, anchors: p5.Vector[], resolution: number, transform?: {offset: p5.Vector, scale: number}): p5.Vector[] => {
+export const getCurve = (p: p5, anchors: p5.Vector[], resolution: number, transform?: Function): p5.Vector[] => {
     let points: p5.Vector[] = [];
 
     let used_resolution: number;
@@ -17,7 +16,7 @@ export const getCurve = (p: p5, anchors: p5.Vector[], resolution: number, transf
         }
         
         if (transform)
-            points.push(a[0].mult(transform.scale).add(transform.offset));
+            points.push(transform(a[0]));
         else
             points.push(a[0]);
     }

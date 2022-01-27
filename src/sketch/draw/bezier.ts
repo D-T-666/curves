@@ -1,11 +1,12 @@
 import * as p5 from "p5";
 import { Bezier } from "../bezier";
 import { drawLineCap } from "./lineCaps";
-import { drawLineSegmentWithBorders } from "./lineSegmentWithBorders";
+import { drawLineSegmentWithBorders, drawLineSegmentWithBorders_lines } from "./lineSegmentWithBorders";
 import { getCurve } from "../getCurve";
 
 export interface bezierDrawParams {
     _resolution: number,
+    _thickness: number,
     _stroke?: Function | p5.Color,
     _fill?: Function | p5.Color,
     _stroke_weight?: Function | number,
@@ -13,18 +14,15 @@ export interface bezierDrawParams {
     _draw_caps?: number,
 }
 
-export const drawBezierCurve = (p: p5, b: Bezier, interaction_vars: any, dp?: bezierDrawParams | boolean) => {
+export const drawBezierCurve = (p: p5, world_transform: any, b: Bezier, kind: string, interaction_vars: any, dp?: bezierDrawParams | boolean) => {
     let used_dp: bezierDrawParams;
 
     let anchors_to_use: p5.Vector[];
-    let offset_to_use: p5.Vector
 
     if (interaction_vars.pmouseIsPressed && interaction_vars.grabbed === 9) {
         anchors_to_use = b._new_anchors;
-        offset_to_use = b._new_pos;
     } else {
         anchors_to_use = b._anchors;
-        offset_to_use = b._pos;
     }
 
     if (dp instanceof Object)
@@ -33,27 +31,48 @@ export const drawBezierCurve = (p: p5, b: Bezier, interaction_vars: any, dp?: be
         used_dp = b._draw_params;
     else
         used_dp = {
-            _resolution: 25,
+            _resolution: p.constrain(b._anchors.length * 5, 25, 100),
             _stroke: p.color(112, 226, 255, 110),
             _fill: p.color(112, 226, 255, 110),
-            _stroke_weight: 2,
+            _stroke_weight: 0,
             _fill_weight: 10,
-            _draw_caps: 15
+            _draw_caps: 15,
+            _thickness: 10,
         };
     
     let resolution = used_dp._resolution;
 
-    let curve = getCurve(p, anchors_to_use, resolution, {
-        offset: offset_to_use,
-        scale: b._size
-    });
+    let curve_hash = anchors_to_use.reduce((a, b) => a + b.magSq(), resolution);
+    let curve: p5.Vector[];
+
+    if (b._p_curve_hash === curve_hash) {
+        curve = b._p_curve;
+    } else {
+        curve = getCurve(p, anchors_to_use, resolution, world_transform.apply);
+
+        b._p_curve = curve;
+        b._p_curve_hash = anchors_to_use.reduce((a, b) => a + b.magSq(), resolution);
+    }
+
+    let line_segment_draw_function: Function;
+    switch (kind) {
+        case "ribbon":
+        case "r":
+            line_segment_draw_function = drawLineSegmentWithBorders;
+            break;
+        case "thick":
+        case "t":
+            line_segment_draw_function = drawLineSegmentWithBorders_lines;
+            used_dp._draw_caps = 15;
+            break;
+    }
 
     if (used_dp._draw_caps && used_dp._draw_caps & 1) {
         drawLineCap(p, used_dp, curve[0], curve[1], 0, (used_dp._draw_caps & 4) !== 0);
     }
 
     for (let i = 0; i < resolution; i++) {
-        drawLineSegmentWithBorders(p, [
+        line_segment_draw_function(p, [
             curve[i - Number(i > 0)], 
             curve[i], 
             curve[i + 1], 

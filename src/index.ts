@@ -24,4 +24,8 @@ new p5((p: p5): void => {
     p.doubleClicked = (): void => {
         main_scene.doubleClicked();
     }
+
+    p.mouseWheel = (event: any): void => {
+        main_scene.mousePan(event)
+    }
 });

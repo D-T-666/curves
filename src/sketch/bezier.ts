@@ -5,14 +5,12 @@ import { bezierDrawParams } from "./draw/bezier";
 export interface PlainBezier {
     _anchors: number[][];
     _name: string;
-    _pos: number[];
     _size: number;
     _base_line: number;
 }
 
 export interface Bezier extends Omit<PlainBezier, '_anchors' | '_pos'> {
     _anchors: p5.Vector[];
-    _pos: p5.Vector;
     _draw_params?: bezierDrawParams;
     _vars?: any;
     [key: string]: any;
@@ -39,7 +37,6 @@ export const createBezier = (p: p5, name?: string): Bezier => {
 export const getPlainBezier = (b: Bezier): PlainBezier => ({
     _name: b._name,
     _size: b._size,
-    _pos: [ b._pos.x, b._pos.y ],
     _anchors: b._anchors.map(v => [ v.x, v.y ]),
     _base_line: 1,
 });

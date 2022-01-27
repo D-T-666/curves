@@ -31,13 +31,13 @@ export const getBoundingBox = (p: p5, points: p5.Vector[], get_radius?: boolean)
     bb.c.add(bb.p1).add(bb.p2).div(2);
 
     if (get_radius) {
-        bb.r = -Infinity;
+        bb.r = bb.c.copy().sub(bb.p1).mag();
         bb.cg.div(points.length);
         // This is slow, that's why it's optional
         for (let i = 0; i < points.length; i++) {
-            let d = p5.Vector.dist(points[i], bb.c);
-            if (d > bb.r)
-                bb.r = d;
+            let d = points[i].copy().sub(bb.c).magSq();
+            if (d > bb.r * bb.r)
+                bb.r = p.sqrt(d);
         }
     }
 
