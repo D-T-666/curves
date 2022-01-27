@@ -22,6 +22,7 @@ export const createBezier = (p: p5, name?: string): Bezier => {
             p.createVector(0, 0),
             p.createVector(1, 1.5),
             p.createVector(-4, -2.5),
+            p.createVector(-1, -0.5),
             p.createVector(1, 0),
         ],
         _name: name,

@@ -71,7 +71,7 @@ export class Scene {
         const pmouse = this._world_transform.unapply(this._p5.createVector(this._p5.pmouseX, this._p5.pmouseY));
 
         for (let i = 0; i < this._beziers.length; i++) {
-            drawBezierCurve(this._p5, this._world_transform, this._beziers[i], "t", this._interaction_vars, true);
+            drawBezierCurve(this._p5, this._world_transform, this._beziers[i], "t", this._interaction_vars, false);
             if (i === this._active_bezier) {
                 switch (this._active_bezier_mode) {
                 case 0:

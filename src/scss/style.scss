@@ -1,4 +1,124 @@
+$bgd: #1f1e24;
+$bg: #19181e;
+$fg: #fff;
+$fgd: #fff6;
+
 body {
     margin: 0;
     padding: 0;
+
+    .side-panel-container {
+        position: absolute;
+        width: 332px;
+        height: calc(100vh - 232px);
+        // background-color: white;
+        display: flex;
+        flex-direction: column;
+
+        .side-panel {
+            display: block;
+            margin: 16px;
+            background-color: $bgd;
+            border-radius: 16px;
+            // flex-grow: 1;
+            overflow: hidden;
+
+
+            #new-curve {
+                position: sticky;
+                bottom: 0;
+                width: 100%;
+                border: none;
+                padding: 8px;
+                font-size: 12px;
+                font-family: monospace;
+                background-color: $bgd;
+                color: $fg;
+
+                &:hover {
+                    background-color: $bg;
+                }
+            }
+        }
+    }
+}
+
+.curve-listing {
+    width: 100%;
+    padding: 8px;
+    background-color: $bgd;
+    color: $fg;
+    border-bottom: 1px solid $fgd;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+        // background-color: $bg;
+
+        .toolbox {
+            opacity: 1;
+        }
+    }
+
+    input[type="checkbox"] {
+        margin: 4px;
+    }
+
+    textarea {
+        color: $fg;
+        background-color: transparent;
+        border: none;
+        resize: none;
+        flex-grow: 1;
+        margin: 0 1ch 0 1ch;
+        font-size: 12px;
+    }
+
+    .toolbox {
+        display: flex;
+        opacity: 0;
+        margin: 0 2ch 0 0;
+
+        div {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            list-style-type: none;
+            padding: 0;
+
+            button {
+
+                &+button {
+                    border-top: 1px solid $bg;
+                }
+
+            }
+        }
+
+        button {
+            border-radius: 6px;
+            font-size: 16px;
+            white-space: nowrap;
+            font-family: monospace;
+            flex-grow: 1;
+            border: none;
+            min-width: 3ch;
+            text-align: center;
+            align-items: center;
+            cursor: pointer;
+            background-color: transparent;
+            color: $fg;
+            opacity: 0.2;
+
+            
+            &:hover {
+                background-color: $bg;
+                opacity: 1;
+            }
+        }
+
+        .left {
+
+        }
+    }
 }
