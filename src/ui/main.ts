@@ -25,6 +25,7 @@ export class SidePanel {
             duplicate: (index: number) => this.duplicateListing(index),
             toggle_hide: (index: number) => this.toggleHideListing(index),
             rearrange: (index: number, direciton: number) => this.rearrange_listing(index, direciton),
+            focus: (index: number) => this.focus(index),
         };
 
         this.previous_listings = [];
@@ -43,6 +44,15 @@ export class SidePanel {
         this.ui.newCurveButton = createNewCurveButton(this.p5, (e) => this.createNewListing());
         this.side_panel_div.appendChild(this.ui.newCurveButton);
     }
+
+    focus(index: number) {
+        if (index !== this.scene_ref._active_bezier) {
+            if (this.scene_ref._active_bezier >= 0 && this.scene_ref._active_bezier < this.scene_ref._beziers.length)
+                this.ui.curve_listings[this.scene_ref._active_bezier].unfocus();
+            this.scene_ref._active_bezier = index;
+            this.scene_ref._active_bezier_mode = 1;
+        }
+    } 
 
     rearrange_listing(index: number, direction: number) {
         if (index + direction >= 0 && index + direction < this.ui.curve_listings.length) {

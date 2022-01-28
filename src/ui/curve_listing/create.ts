@@ -8,12 +8,16 @@ export class CurveListing {
     curve_index: number;
     parent_callbacks: any;
     callbacks: any;
-    element: Element
+    element: Element;
+    focused: boolean;
+    ui: any;
 
     constructor(_scene_ref: Scene, _curve_index: number, _callbacks: any) {
         this.scene_ref = _scene_ref;
         this.curve_index = _curve_index;
         this.parent_callbacks = _callbacks;
+
+        this.focused = this.scene_ref._active_bezier === this.curve_index;
 
         this.callbacks = {
             delete: () => this.delete(),
@@ -23,13 +27,36 @@ export class CurveListing {
             move_down: () => this.move_down(),
         }
 
-        this.element = document.createElement('div');
+        this.element = document.createElement('button');
+    
+        this.element.addEventListener('click', (e) => this.focus())
     
         this.element.classList.add('curve-listing');
     
-        this.element.appendChild(createCurveListingCheckbox(!this.scene_ref._beziers[this.curve_index].hidden, this.callbacks.toggle_hide));
-        this.element.appendChild(createCurveListingTitle(this.curve_index, this.scene_ref));
-        this.element.appendChild(createCurveListingToolBox(this.curve_index, this.scene_ref, this.callbacks));
+        this.ui = {
+            checkbox: createCurveListingCheckbox(!this.scene_ref._beziers[this.curve_index].hidden, this.callbacks.toggle_hide),
+            title: createCurveListingTitle(this.curve_index, this.scene_ref),
+            toolbox: createCurveListingToolBox(this.curve_index, this.scene_ref, this.callbacks),
+        };
+        this.element.appendChild(this.ui.checkbox);
+        this.element.appendChild(this.ui.title);
+        this.element.appendChild(this.ui.toolbox);
+
+        this.ui.title.disabled = true;
+    }
+
+    unfocus() {
+        this.ui.title.disabled = true;
+        
+        this.element.classList.remove('active')
+    }
+
+    focus() {
+        this.parent_callbacks.focus(this.curve_index);
+
+        this.element.classList.add('active')
+
+        this.ui.title.disabled = false;
     }
 
     move_up() {
