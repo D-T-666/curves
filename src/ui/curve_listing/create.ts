@@ -20,11 +20,11 @@ export class CurveListing {
         this.focused = this.scene_ref._active_bezier === this.curve_index;
 
         this.callbacks = {
-            delete: () => this.delete(),
-            duplicate: () => this.duplicate(),
+            delete: (e: Event) => this.delete(e),
+            duplicate: (e: Event) => this.duplicate(e),
             toggle_hide: () => this.toggle_hide(),
-            move_up: () => this.move_up(),
-            move_down: () => this.move_down(),
+            move_up: (e: Event) => this.move_up(e),
+            move_down: (e: Event) => this.move_down(e),
         }
 
         this.element = document.createElement('button');
@@ -47,7 +47,7 @@ export class CurveListing {
 
     unfocus() {
         this.ui.title.disabled = true;
-        
+
         this.element.classList.remove('active')
     }
 
@@ -59,19 +59,27 @@ export class CurveListing {
         this.ui.title.disabled = false;
     }
 
-    move_up() {
+    move_up(e: Event) {
+        e.stopPropagation();
+
         this.parent_callbacks.rearrange(this.curve_index, -1);
     }
 
-    move_down() {
+    move_down(e: Event) {
+        e.stopPropagation();
+
         this.parent_callbacks.rearrange(this.curve_index, 1);
     }
 
-    delete() {
+    delete(e: Event) {
+        e.stopPropagation();
+
         this.parent_callbacks.delete(this.curve_index);
     }
 
-    duplicate() {
+    duplicate(e: Event) {
+        e.stopPropagation();
+
         this.parent_callbacks.duplicate(this.curve_index);
     }
 

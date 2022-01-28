@@ -1,4 +1,4 @@
-$bgd: #1f1e2477;
+$bgd: #1f1e2488;
 $bg: #19181e;
 $fg: #fff;
 $fgd: #fff6;
@@ -47,11 +47,10 @@ body {
 }
 
 .curve-listing {
-    // width: 100%;
     padding: 8px;
     background-color: transparent;
     color: $fg;
-    // border-bottom: 1px solid $fgd;
+
     display: flex;
     align-items: center;
 
@@ -90,8 +89,7 @@ body {
 
     .toolbox {
         display: flex;
-        opacity: 0;
-        // margin: 0 2ch 0 0;
+        opacity: 0.1;
 
         div {
             display: flex;
@@ -99,14 +97,6 @@ body {
             justify-content: space-between;
             list-style-type: none;
             padding: 0;
-
-            button {
-
-                &+button {
-                    border-top: 1px solid $bgd;
-                }
-
-            }
         }
 
         button {
@@ -122,13 +112,13 @@ body {
             cursor: pointer;
             background-color: transparent;
             color: $fg;
-            opacity: 0.4;
+            opacity: 0.5;
             user-select: none;
 
             
             &:hover {
-                background-color: $bgd;
-                opacity: 1;
+                background-color: $bg;
+                opacity: 2;
             }
         }
     }

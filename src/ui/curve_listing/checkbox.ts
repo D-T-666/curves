@@ -7,7 +7,12 @@ export const createCurveListingCheckbox = (state: boolean, callback: (e:Event) =
     checkbox.type = 'checkbox';
     checkbox.checked = state;
 
-    checkbox.addEventListener('change', callback)
+    checkbox.addEventListener('change', (e) => {
+
+        callback(e);
+    });
+
+    checkbox.addEventListener('click', (e) => e.stopPropagation());
 
     return checkbox;
 }
