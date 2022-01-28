@@ -13,9 +13,11 @@ live here: [projects.dimitri.ge/curves](https://projects.dimitri.ge/curves)
 - [x] switching between edit modes
 - [ ] multiple curves
   - [x] UI
-  - [ ] functionality
+  - [x] functionality
     - [x] insertion/deletion/duplication
-    - [ ] rearrangement
+    - [x] rearrangement
+  - [ ] click select (should select the curve you click on the canvas)
+  - [ ] select multiple curves
 - [ ] char creation
   - [ ] ability to specify the baseline
   - [ ] order of the anchors
