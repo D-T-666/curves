@@ -32,9 +32,9 @@ export class Scene {
 
         this._interaction_vars = {grabbed: -1};
 
-        this._beziers = [createBezier(p)];
-        this._active_bezier = 0;
-        this._active_bezier_mode = 1;
+        this._beziers = [];
+        this._active_bezier = -1;
+        this._active_bezier_mode = 0;
 
         this._world_transform = {
             offset: p.createVector(this._p5.width / 2, this._p5.height / 2),
@@ -47,15 +47,21 @@ export class Scene {
             },
         }
 
-        this._beziers[0]._draw_params = {
+        this.createNewCurve();
+    }
+
+    createNewCurve(name?: string) {
+        this._beziers.push(createBezier(this._p5, name ? name : `curve ${this._beziers.length}`));
+
+        this._beziers[this._beziers.length - 1]._draw_params = {
             _resolution: 100,
             _fill: (t: number): p5.Color => {
                 let b = this._p5.abs(this._p5.abs(this._p5.sin(t*this._p5.TWO_PI * 1 + this._p5.frameCount * 0.05)) * 0.5) + 0.5;
                 return this._p5.color((t * 127 + 127) * b, 127 * b, (1 - t) * 255 * b);
             },
-            _stroke: this._p5.color(255),//240, 180, 40),
+            _stroke: this._p5.color(255),
             _fill_weight:
-             (t: number): number => {
+            (t: number): number => {
                 return this._p5.abs(this._p5.abs(this._p5.sin(t*this._p5.TWO_PI * 1 + this._p5.frameCount * 0.05)) * 16 + 0);
             },
             _stroke_weight: 3,
@@ -71,15 +77,17 @@ export class Scene {
         const pmouse = this._world_transform.unapply(this._p5.createVector(this._p5.pmouseX, this._p5.pmouseY));
 
         for (let i = 0; i < this._beziers.length; i++) {
-            drawBezierCurve(this._p5, this._world_transform, this._beziers[i], "t", this._interaction_vars, false);
+            if (!this._beziers[i].hidden)
+                drawBezierCurve(this._p5, this._world_transform, this._beziers[i], "t", this._interaction_vars, true);
+
             if (i === this._active_bezier) {
                 switch (this._active_bezier_mode) {
-                case 0:
-                    drawBezierAnchors(this._p5, this._world_transform, this._beziers[i], mouse, pmouse, this._colors);
-                    break;
-                case 1:
-                    drawBoundingBox(this._p5, this._world_transform, this._beziers[i], mouse, pmouse, this._colors, this._interaction_vars);
-                    break;
+                    case 0:
+                        drawBezierAnchors(this._p5, this._world_transform, this._beziers[i], mouse, pmouse, this._colors);
+                        break;
+                    case 1:
+                        drawBoundingBox(this._p5, this._world_transform, this._beziers[i], mouse, pmouse, this._colors, this._interaction_vars);
+                        break;
                 } 
             }
         }

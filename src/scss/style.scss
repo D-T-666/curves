@@ -6,8 +6,9 @@ $fgd: #fff6;
 body {
     margin: 0;
     padding: 0;
+    overscroll-behavior: none;
 
-    .side-panel-container {
+    #side-panel-container {
         position: absolute;
         width: 332px;
         height: calc(100vh - 232px);
@@ -15,13 +16,13 @@ body {
         display: flex;
         flex-direction: column;
 
-        .side-panel {
+        #side-panel {
             display: block;
             margin: 16px;
             background-color: $bgd;
             border-radius: 16px;
             // flex-grow: 1;
-            overflow: hidden;
+            overflow-y: auto;
 
 
             #new-curve {
@@ -48,11 +49,11 @@ body {
     padding: 8px;
     background-color: $bgd;
     color: $fg;
-    border-bottom: 1px solid $fgd;
+    // border-bottom: 1px solid $fgd;
     display: flex;
     align-items: center;
 
-    &:hover {
+    &:hover, &:focus {
         // background-color: $bg;
 
         .toolbox {
@@ -72,6 +73,13 @@ body {
         flex-grow: 1;
         margin: 0 1ch 0 1ch;
         font-size: 12px;
+
+        outline: none;
+        text-decoration: none;
+
+        &:focus {
+            border-bottom: 1px solid $fgd;
+        }
     }
 
     .toolbox {

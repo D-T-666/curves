@@ -6,15 +6,17 @@ live here: [projects.dimitri.ge/curves](https://projects.dimitri.ge/curves)
 
 ---
 
-- [x] moving and scaling curves
-- [ ] editing curve anchors
+- [x] moving, scaling, and rotating curves
+- [x] editing curve anchors
   - [x] moving existing anchors around
-  - [ ] inserting anchors
-- [ ] switching between edit modes
+  - [x] inserting anchors
+- [x] switching between edit modes
 - [ ] multiple curves
-  - [ ] UI
-  - [ ] insertion/deletion/rearrangement
-- [ ] character creation
+  - [x] UI
+  - [ ] functionality
+    - [ ] insertion/deletion/duplication
+    - [ ] rearrangement
+- [ ] char creation
   - [ ] ability to specify the baseline
-  - [ ] start and end
+  - [ ] order of the anchors
   - [ ] bounding box
