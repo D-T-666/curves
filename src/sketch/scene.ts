@@ -129,7 +129,7 @@ export class Scene {
             this._world_transform.scale *= Math.exp(-event.deltaY/100);
         } else {
             this._world_transform.offset.x -= event.deltaX;
-            this._world_transform.offset.x -= event.deltaY;
+            this._world_transform.offset.y -= event.deltaY;
         }
     }
 }

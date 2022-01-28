@@ -48,11 +48,13 @@ export const drawBezierCurve = (p: p5, world_transform: any, b: Bezier, kind: st
     if (b._p_curve_hash === curve_hash) {
         curve = b._p_curve;
     } else {
-        curve = getCurve(p, anchors_to_use, resolution, world_transform.apply);
+        curve = getCurve(p, anchors_to_use, resolution);
 
         b._p_curve = curve;
         b._p_curve_hash = anchors_to_use.reduce((a, b) => a + b.magSq(), resolution);
     }
+
+    curve = curve.map(world_transform.apply);
 
     let line_segment_draw_function: Function;
     switch (kind) {
