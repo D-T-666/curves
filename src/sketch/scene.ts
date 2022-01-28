@@ -64,7 +64,7 @@ export class Scene {
             (t: number): number => {
                 return this._p5.abs(this._p5.abs(this._p5.sin(t*this._p5.TWO_PI * 1 + this._p5.frameCount * 0.05)) * 16 + 0);
             },
-            _stroke_weight: 3,
+            _stroke_weight: 2,
             _draw_caps: 0,
             _thickness: 6,
         };

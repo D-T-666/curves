@@ -1,4 +1,4 @@
-$bgd: #1f1e24;
+$bgd: #1f1e2488;
 $bg: #19181e;
 $fg: #fff;
 $fgd: #fff6;
@@ -20,10 +20,10 @@ body {
             display: block;
             margin: 16px;
             background-color: $bgd;
+            backdrop-filter: blur(4px);
             border-radius: 16px;
             // flex-grow: 1;
             overflow-y: auto;
-
 
             #new-curve {
                 position: sticky;
@@ -45,7 +45,7 @@ body {
 }
 
 .curve-listing {
-    width: 100%;
+    // width: 100%;
     padding: 8px;
     background-color: $bgd;
     color: $fg;
@@ -85,7 +85,7 @@ body {
     .toolbox {
         display: flex;
         opacity: 0;
-        margin: 0 2ch 0 0;
+        // margin: 0 2ch 0 0;
 
         div {
             display: flex;

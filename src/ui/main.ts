@@ -1,8 +1,8 @@
 import p5 = require("p5");
-import { createBezier } from "../sketch/bezier";
 import { Scene } from "../sketch/scene";
+import { swap } from "../utils/array";
 import { createNewCurveButton } from "./createNewCurveButton";
-import { createCurveListing } from "./curve_listing/create";
+import { CurveListing } from "./curve_listing/create";
 
 export class SidePanel {
     ui: any;
@@ -17,66 +17,96 @@ export class SidePanel {
         this.p5 = p;
 
         this.ui = {
-            curveListings: []
+            curve_listings: []
         }
 
         this.listing_callbacks = {
             delete: (index: number) => this.deleteListing(index),
-            duplicate: (index: number) => this.duplicateListing(index)
+            duplicate: (index: number) => this.duplicateListing(index),
+            toggle_hide: (index: number) => this.toggleHideListing(index),
+            rearrange: (index: number, direciton: number) => this.rearrange_listing(index, direciton),
         };
 
         this.previous_listings = [];
 
         this.side_panel_div = document.getElementById('side-panel');
+        this.side_panel_div.addEventListener('click', (e) => e.stopPropagation())
 
-        this.updateListings();
+        for (let i = 0; i < this.scene_ref._beziers.length; i++) {
+            this.previous_listings[i] = this.scene_ref._beziers[i];
+
+            let listing = new CurveListing(this.scene_ref, i, this.listing_callbacks);
+            this.side_panel_div.appendChild(listing.getElement());
+            this.ui.curve_listings.push(listing);
+        }
 
         this.ui.newCurveButton = createNewCurveButton(this.p5, (e) => this.createNewListing());
         this.side_panel_div.appendChild(this.ui.newCurveButton);
     }
 
-    // hideListing(index: number) {
-    //     this.scene_ref._beziers[index].hidden = 
-    // }
+    rearrange_listing(index: number, direction: number) {
+        if (index + direction >= 0 && index + direction < this.ui.curve_listings.length) {
+            this.side_panel_div.removeChild(this.ui.curve_listings[index].getElement());
+
+            if (direction === -1) {
+                this.side_panel_div.insertBefore(this.ui.curve_listings[index].getElement(), this.ui.curve_listings[index - 1].getElement())
+            } else {
+                if (index + 2 < this.ui.curve_listings.length)
+                    this.side_panel_div.insertBefore(this.ui.curve_listings[index].getElement(), this.ui.curve_listings[index + 2].getElement())
+                else
+                    this.side_panel_div.insertBefore(this.ui.curve_listings[index].getElement(), this.ui.newCurveButton)
+            }
+            swap(this.scene_ref._beziers, index, index + direction);
+            swap(this.ui.curve_listings, index, index + direction);
+        }
+        this.updateListings();
+    } 
+
+    toggleHideListing(index: number) {
+        this.scene_ref._beziers[index].hidden = !this.scene_ref._beziers[index].hidden;
+    }
 
     deleteListing(index: number) {
-        this.side_panel_div.removeChild(this.ui.curveListings[index]);
-        this.ui.curveListings.splice(index, 1);
         this.scene_ref._beziers.splice(index, 1);
+        this.removeListing(index);
     }
 
     duplicateListing(index: number) {
         this.scene_ref._beziers.splice(index + 1, 0, {...this.scene_ref._beziers[index]});
 
-        this.insertListing(createCurveListing(index + 1, this.scene_ref, this.listing_callbacks), index + 1);
+        this.insertListing(new CurveListing(this.scene_ref, index + 1, this.listing_callbacks), index + 1);
     }
 
     createNewListing(index?: number): any {
         this.scene_ref.createNewCurve(prompt('name for the new curve'));
 
-        let listing = createCurveListing(this.scene_ref._beziers.length - 1, this.scene_ref, this.listing_callbacks);
+        let listing = new CurveListing(this.scene_ref, this.scene_ref._beziers.length - 1, this.listing_callbacks);
 
         this.insertListing(listing);
     }
 
-    insertListing(listing: any, index?: number): any {
-        if (index && index < this.ui.curveListings.length)
-            this.side_panel_div.insertBefore(listing, this.ui.curveListings[index]);
-        else
-            this.side_panel_div.insertBefore(listing, this.ui.newCurveButton);
+    insertListing(listing: CurveListing, index?: number): any {
+        if (index && index < this.ui.curve_listings.length) {
+            this.side_panel_div.insertBefore(listing.getElement(), this.ui.curve_listings[index].getElement());
+            this.ui.curve_listings.splice(index, 0, listing);
+        } else {
+            this.side_panel_div.insertBefore(listing.getElement(), this.ui.newCurveButton);
+            this.ui.curve_listings.push(listing);
+        }
 
-        this.ui.curveListings.push(listing);
+        this.updateListings();
+    }
+
+    removeListing(index: number): any {
+        this.side_panel_div.removeChild(this.ui.curve_listings[index].getElement());
+        this.ui.curve_listings.splice(index, 1);
+
+        this.updateListings();
     }
 
     updateListings() {
-        for (let i = 0; i < this.scene_ref._beziers.length; i++) {
-            // if (this.previous_listings[i] !== this.scene_ref._beziers[i]) {
-                this.previous_listings[i] = this.scene_ref._beziers[i];
-
-                let listing = createCurveListing(i, this.scene_ref, this.listing_callbacks);
-                this.side_panel_div.appendChild(listing);
-                this.ui.curveListings.push(listing);
-            // }
+        for (let i = 0; i < this.ui.curve_listings.length; i++) {
+            this.ui.curve_listings[i].curve_index = i;
         }
     }
 }

@@ -28,7 +28,7 @@ export const createCurveListingToolBox = (curve_index: number, scene_ref: Scene,
 
         duplicate_button.innerText = '📋';
 
-        duplicate_button.addEventListener('click', (e) => callbacks.duplicate(curve_index))
+        duplicate_button.addEventListener('click', callbacks.duplicate)
 
         duplicate_button_div.appendChild(duplicate_button);
         
@@ -40,7 +40,7 @@ export const createCurveListingToolBox = (curve_index: number, scene_ref: Scene,
 
         delete_button.innerText = '🗑';
 
-        delete_button.addEventListener('click', (e) => callbacks.delete(curve_index));
+        delete_button.addEventListener('click', callbacks.delete);
 
         delete_button_div.appendChild(delete_button);
         
@@ -53,6 +53,9 @@ export const createCurveListingToolBox = (curve_index: number, scene_ref: Scene,
 
         up_button.innerText = '↑';
         down_button.innerText = '↓';
+
+        up_button.addEventListener('click', callbacks.move_up);
+        down_button.addEventListener('click', callbacks.move_down);
 
         arrangement_buttons_div.appendChild(up_button);
         arrangement_buttons_div.appendChild(down_button);

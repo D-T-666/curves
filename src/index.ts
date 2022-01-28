@@ -3,6 +3,7 @@ import './scss/style.scss';
 import { Scene } from "./sketch/scene";
 import { SidePanel } from "./ui/main";
 
+
 new p5((p: p5): void => {
     let main_scene: Scene;
     let side_panel: SidePanel;

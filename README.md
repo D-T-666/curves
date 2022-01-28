@@ -14,7 +14,7 @@ live here: [projects.dimitri.ge/curves](https://projects.dimitri.ge/curves)
 - [ ] multiple curves
   - [x] UI
   - [ ] functionality
-    - [ ] insertion/deletion/duplication
+    - [x] insertion/deletion/duplication
     - [ ] rearrangement
 - [ ] char creation
   - [ ] ability to specify the baseline
