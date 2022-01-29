@@ -8,6 +8,10 @@ export interface BoundingBox {
     r?: number,
 };
 
+export const pointInBox = (p: p5, point: p5.Vector, bb: BoundingBox): boolean => {
+    return point.x > bb.p1.x && point.x < bb.p2.x && point.y > bb.p1.y && point.y < bb.p2.y;
+}
+
 export const getBoundingBox = (p: p5, points: p5.Vector[], get_radius?: boolean): BoundingBox => {
     let bb: BoundingBox = {
         p1: p.createVector( Infinity,  Infinity),

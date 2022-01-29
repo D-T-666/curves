@@ -90,8 +90,7 @@ export const interactBoundingBox = (p: p5, world_transforms: any, b: Bezier, mou
             b._anchors.forEach(a => {
                 a.sub(c).mult(d).add(c)
             });
-        }
-        if (hovering === 9) {
+        } else if (hovering === 9) {
             b._new_anchors = b._anchors.map((a: p5.Vector) => {
                 
                 return a.copy()
@@ -99,6 +98,8 @@ export const interactBoundingBox = (p: p5, world_transforms: any, b: Bezier, mou
                     .rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI)
                     .add(bb.c);
             });
+        } else {
+            interaction_vars.defocus_all = true;
         }
     } else {
         if (hovering === 8)

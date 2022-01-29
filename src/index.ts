@@ -13,6 +13,7 @@ new p5((p: p5): void => {
 
         main_scene = new Scene(p);
         side_panel = new SidePanel(p, main_scene);
+        main_scene.set_ui_callbacks(side_panel.scene_callbacks);
     }
 
     p.draw = (): void => {

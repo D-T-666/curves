@@ -48,15 +48,17 @@ export class CurveListing {
     unfocus() {
         this.ui.title.disabled = true;
 
-        this.element.classList.remove('active')
+        this.element.classList.remove('active');
     }
 
-    focus() {
-        this.parent_callbacks.focus(this.curve_index);
+    focus(originator?: boolean) {
+        if (!originator)
+            this.parent_callbacks.focus(this.curve_index);
 
-        this.element.classList.add('active')
+        this.element.classList.add('active');
 
-        this.ui.title.disabled = false;
+        if (!originator)
+            this.ui.title.disabled = false;
     }
 
     move_up(e: Event) {

@@ -1,4 +1,5 @@
 import p5 = require("p5");
+import { getBoundingBox, pointInBox } from "../utils/points";
 import { Bezier, createBezier } from "./bezier";
 import { drawBezierAnchors } from "./draw/anchors";
 import { drawBezierCurve } from "./draw/bezier";
@@ -20,6 +21,7 @@ export class Scene {
         unapply: Function,
         [key: string]: any,
     };
+    ui: any;
 
     constructor(p: p5) {
         this._p5 = p;
@@ -48,6 +50,15 @@ export class Scene {
         }
 
         this.createNewCurve();
+    }
+
+    set_ui_callbacks(callbacks: any) {
+        this.ui = callbacks;
+    } 
+
+    focus(index: number, defocus_others?: boolean) {
+        this._active_bezier = index;
+        this._active_bezier_mode = 1;
     }
 
     createNewCurve(name?: string) {
@@ -97,6 +108,8 @@ export class Scene {
         const mouse = this._world_transform.unapply(this._p5.createVector(this._p5.mouseX, this._p5.mouseY));
         const pmouse = this._world_transform.unapply(this._p5.createVector(this._p5.pmouseX, this._p5.pmouseY));
 
+        let potential_new_active_bezier = -1;
+
         for (let i = 0; i < this._beziers.length; i++) {
             if (i === this._active_bezier) {
                 switch (this._active_bezier_mode) {
@@ -108,7 +121,17 @@ export class Scene {
                     break;
                 } 
             }
+
+            if (this._p5.mouseIsPressed && this._active_bezier_mode !== 0 && pointInBox(this._p5, mouse, getBoundingBox(this._p5, this._beziers[i]._anchors))) {
+                potential_new_active_bezier = i;
+            }
         }
+
+        if (this._interaction_vars.defocus_all || this._active_bezier < 0) {
+            this.ui.focus(potential_new_active_bezier, true);
+        }
+
+        this._interaction_vars.defocus_all = false;
 
         if (this._interaction_vars.change_mode) {
             this._active_bezier_mode = 1 - this._active_bezier_mode;
