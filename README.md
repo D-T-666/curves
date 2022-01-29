@@ -4,7 +4,11 @@ A small Bezier curve editor built with p5.js
 
 live here: [projects.dimitri.ge/curves](https://projects.dimitri.ge/curves)
 
+## run the dev server: `npm run dev`
+
 ---
+
+## TODO
 
 - [x] moving, scaling, and rotating curves
 - [x] editing curve anchors
@@ -18,6 +22,8 @@ live here: [projects.dimitri.ge/curves](https://projects.dimitri.ge/curves)
     - [x] rearrangement
   - [x] click select (should select the curve you click on the canvas)
   - [ ] select multiple curves
+    - [ ] UI
+    - [ ] in-canvas
 - [ ] char creation
   - [ ] ability to specify the baseline
   - [ ] order of the anchors

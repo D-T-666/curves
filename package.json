@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server",
+    "dev": "mkdir -p build ; cp src/index.html build ; webpack-dev-server",
     "build": "NODE_ENV=production webpack ; cp src/index.html build/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
