@@ -4,7 +4,9 @@ A small Bezier curve editor built with p5.js
 
 live here: [projects.dimitri.ge/curves](https://projects.dimitri.ge/curves)
 
-## run the dev server: `npm run dev`
+## Development
+
+to run the dev server: `npm run dev`
 
 ---
 
