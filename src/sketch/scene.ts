@@ -4,6 +4,7 @@ import { Bezier, createBezier } from "./bezier";
 import { drawBezierAnchors } from "./draw/anchors";
 import { drawBezierCurve } from "./draw/bezier";
 import { drawBoundingBox } from "./draw/boundingBox";
+import { getCurve } from "./getCurve";
 import { interactAnchors } from "./interact/anchors";
 import { interactBoundingBox } from "./interact/boundingBox";
 
@@ -28,8 +29,9 @@ export class Scene {
         
         this._colors = {
             bg: p.color(38, 37, 51),
-            bgd: p.color(19, 18, 35, 64),
-            fg: p.color(237, 250, 255)
+            bgd: p.color(19, 18, 35, 63),
+            fg: p.color(237, 250, 255),
+            fgd: p.color(237, 250, 255, 63),
         };
 
         this._interaction_vars = {grabbed: -1};
@@ -101,6 +103,15 @@ export class Scene {
                         break;
                 } 
             }
+            // let bb = getBoundingBox(this._p5, getCurve(this._p5, this._beziers[i]._anchors, 20));
+            // if (!(this._active_bezier_mode === 0 && this._active_bezier > -1)&& pointInBox(this._p5, mouse, bb)) {
+            //     bb.p1 = this._world_transform.apply(bb.p1);
+            //     bb.p2 = this._world_transform.apply(bb.p2);
+            //     this._p5.stroke(this._colors.fgd);
+            //     this._p5.strokeWeight(2);
+            //     this._p5.noFill();
+            //     this._p5.rect(bb.p1.x, bb.p1.y, bb.p2.x-bb.p1.x, bb.p2.y-bb.p1.y);
+            // }
         }
     }
 
@@ -122,13 +133,14 @@ export class Scene {
                 } 
             }
 
-            if (this._p5.mouseIsPressed && this._active_bezier_mode !== 0 && pointInBox(this._p5, mouse, getBoundingBox(this._p5, this._beziers[i]._anchors))) {
+            if (this._p5.mouseIsPressed && !(this._active_bezier_mode === 0 && this._active_bezier > -1) && pointInBox(this._p5, mouse, getBoundingBox(this._p5, getCurve(this._p5, this._beziers[i]._anchors, 20)))) {
                 potential_new_active_bezier = i;
             }
         }
 
         if (this._interaction_vars.defocus_all || this._active_bezier < 0) {
             this.ui.focus(potential_new_active_bezier, true);
+            this._interaction_vars.grabbed = 8;
         }
 
         this._interaction_vars.defocus_all = false;
