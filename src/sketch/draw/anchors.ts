@@ -12,55 +12,42 @@ export const drawBezierAnchors = (
 ) => {
     const r = 6;
 
-    let mouse_on_anchor = false;
     let hovering = -1;
 
-    for (let i = 0; i < b._anchors.length; i++) {
-        const is_hovering =
-            p.dist(p.pmouseX, p.pmouseY, b._anchors[i].x, b._anchors[i].y) <
-            r * 1.4141;
-        mouse_on_anchor = mouse_on_anchor || is_hovering;
-        if (is_hovering) hovering = i;
-    }
+    b._anchors.every((a, i) => {
+        // If the distance between mouse and the anchor is greater than
+        // the anchor's radius, that means it's not being hovered. Skip
+        if (pmouse.dist(a) > (r * 1.4141) / world_transforms.scale) return true;
+        // Otherwise, set the hovering index to i and end the loop
+        hovering = i;
+    });
+
+    p.cursor(hovering === -1 ? "default" : "move");
 
     // Anchors, but transformed to screen soace
-    let transformed_anchors: p5.Vector[] = b._anchors.map(
-        world_transforms.apply,
-    );
+    let anchors: p5.Vector[] = b._anchors.map(world_transforms.apply);
 
-    for (let i = 0; i < b._anchors.length; i++) {
-        if (i < b._anchors.length - 1) {
-            p.stroke(colors.fg);
-            p.strokeWeight(1);
+    p.stroke(colors.fg);
+    p.strokeWeight(1);
 
+    for (let i = 0; i < anchors.length; i++) {
+        if (i < anchors.length - 1) {
+            // Draw the connecting lines between anchors
             p.line(
-                transformed_anchors[i].x,
-                transformed_anchors[i].y,
-                transformed_anchors[i + 1].x,
-                transformed_anchors[i + 1].y,
+                anchors[i].x,
+                anchors[i].y,
+                anchors[i + 1].x,
+                anchors[i + 1].y,
             );
         }
 
+        // Double the size and change the fill color if the anchor is being hovered
         if (hovering === i) {
             p.fill(colors.bgd);
-            p.stroke(colors.fg);
-            p.strokeWeight(1);
-            p.rect(
-                transformed_anchors[i].x - r,
-                transformed_anchors[i].y - r,
-                r * 2,
-                r * 2,
-            );
+            p.rect(anchors[i].x - r, anchors[i].y - r, r * 2, r * 2);
         } else {
-            p.stroke(colors.fg);
-            p.strokeWeight(1);
             p.fill(colors.bg);
-            p.rect(
-                transformed_anchors[i].x - r / 2,
-                transformed_anchors[i].y - r / 2,
-                r,
-                r,
-            );
+            p.rect(anchors[i].x - r / 2, anchors[i].y - r / 2, r, r);
         }
     }
 };
