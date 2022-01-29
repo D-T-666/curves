@@ -46,8 +46,8 @@ export const interactBoundingBox = (p: p5, world_transforms: any, b: Bezier, mou
     interaction_vars.grabbed = hovering;
 
     if (p.mouseIsPressed) {
-        let mouse_delta = mouse.copy().sub(pmouse);
         if (hovering === 8) {
+            let mouse_delta = mouse.copy().sub(pmouse);
             b._anchors.forEach(a => a.add(mouse_delta));
         } else if (hovering < 8 && hovering > 3) {
             let d: number;
@@ -92,7 +92,6 @@ export const interactBoundingBox = (p: p5, world_transforms: any, b: Bezier, mou
             });
         } else if (hovering === 9) {
             b._new_anchors = b._anchors.map((a: p5.Vector) => {
-                
                 return a.copy()
                     .sub(bb.c)
                     .rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI)

@@ -113,6 +113,7 @@ export class Scene {
             //     this._p5.rect(bb.p1.x, bb.p1.y, bb.p2.x-bb.p1.x, bb.p2.y-bb.p1.y);
             // }
         }
+        this._interaction_vars.pmouseIsPressed = this._p5.mouseIsPressed;
     }
 
     interact() {
@@ -150,7 +151,6 @@ export class Scene {
             this._interaction_vars.change_mode = false;
         }
 
-        this._interaction_vars.pmouseIsPressed = this._p5.mouseIsPressed;
         this._interaction_vars.doubleClicked = false;
     }
 
