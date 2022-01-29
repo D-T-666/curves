@@ -1,6 +1,6 @@
 import p5 = require("p5");
 import { copyBezier } from "../sketch/bezier";
-import { Scene } from "../sketch/scene";
+import { Scene } from "../sketch/scene/main";
 import { swap } from "../utils/array";
 import { createNewCurveButton } from "./createNewCurveButton";
 import { CurveListing } from "./curve_listing/create";
@@ -10,7 +10,7 @@ export class SidePanel {
     previous_listings: any;
     scene_ref: Scene;
     p5: p5;
-    side_panel_div: Element
+    side_panel_div: Element;
     listing_callbacks: any;
     scene_callbacks: any;
 
@@ -19,69 +19,108 @@ export class SidePanel {
         this.p5 = p;
 
         this.ui = {
-            curve_listings: []
-        }
+            curve_listings: [],
+        };
 
         this.listing_callbacks = {
             delete: (index: number) => this.deleteListing(index),
             duplicate: (index: number) => this.duplicateListing(index),
             toggle_hide: (index: number) => this.toggleHideListing(index),
-            rearrange: (index: number, direciton: number) => this.rearrange_listing(index, direciton),
+            rearrange: (index: number, direciton: number) => {
+                this.rearrange_listing(index, direciton);
+            },
             focus: (index: number) => this.focus(index, true),
+            anchor_edit: (index: number) => this.anchor_edit(index),
         };
 
         this.scene_callbacks = {
-            focus: (index: number, defocus_others: boolean) => this.focus(index, defocus_others)
-        }
+            focus: (index: number, defocus_others: boolean) =>
+                this.focus(index, defocus_others),
+        };
 
         this.previous_listings = [];
 
-        this.side_panel_div = document.getElementById('side-panel');
-        this.side_panel_div.addEventListener('click', (e) => e.stopPropagation())
+        this.side_panel_div = document.getElementById("side-panel");
+        this.side_panel_div.addEventListener("click", (e) =>
+            e.stopPropagation(),
+        );
 
         for (let i = 0; i < this.scene_ref._beziers.length; i++) {
             this.previous_listings[i] = this.scene_ref._beziers[i];
 
-            let listing = new CurveListing(this.scene_ref, i, this.listing_callbacks);
+            let listing = new CurveListing(
+                this.scene_ref,
+                i,
+                this.listing_callbacks,
+            );
             this.side_panel_div.appendChild(listing.getElement());
             this.ui.curve_listings.push(listing);
         }
 
-        this.ui.newCurveButton = createNewCurveButton(this.p5, (e) => this.createNewListing());
+        this.ui.newCurveButton = createNewCurveButton(this.p5, (e) =>
+            this.createNewListing(),
+        );
         this.side_panel_div.appendChild(this.ui.newCurveButton);
     }
 
+    anchor_edit(index: number) {
+        this.scene_ref.set_focus(index);
+        this.scene_ref.set_focus_mode("anchor-edit");
+    }
+
     focus(index: number, defocus_others?: boolean) {
-        if (index !== this.scene_ref._active_bezier) {
-            console.log()
-            if (defocus_others && this.scene_ref._active_bezier >= 0 && this.scene_ref._active_bezier < this.scene_ref._beziers.length)
-                this.ui.curve_listings[this.scene_ref._active_bezier].unfocus();
-            if (defocus_others && index >= 0 && index < this.scene_ref._beziers.length)
+        if (!this.scene_ref.is_focused(index)) {
+            if (defocus_others) {
+                let indecies_to_defocus = this.scene_ref.get_focused();
+                for (let i = 0; i < indecies_to_defocus.length; i++)
+                    this.ui.curve_listings[indecies_to_defocus[i]].defocus();
+            }
+
+            if (
+                defocus_others &&
+                index >= 0 &&
+                index < this.scene_ref._beziers.length
+            )
                 this.ui.curve_listings[index].focus(true);
-            this.scene_ref.focus(index);
+            this.scene_ref.set_focus(index);
         }
-    } 
+    }
 
     rearrange_listing(index: number, direction: number) {
-        if (index + direction >= 0 && index + direction < this.ui.curve_listings.length) {
-            this.side_panel_div.removeChild(this.ui.curve_listings[index].getElement());
+        if (
+            index + direction >= 0 &&
+            index + direction < this.ui.curve_listings.length
+        ) {
+            this.side_panel_div.removeChild(
+                this.ui.curve_listings[index].getElement(),
+            );
 
             if (direction === -1) {
-                this.side_panel_div.insertBefore(this.ui.curve_listings[index].getElement(), this.ui.curve_listings[index - 1].getElement())
+                this.side_panel_div.insertBefore(
+                    this.ui.curve_listings[index].getElement(),
+                    this.ui.curve_listings[index - 1].getElement(),
+                );
             } else {
                 if (index + 2 < this.ui.curve_listings.length)
-                    this.side_panel_div.insertBefore(this.ui.curve_listings[index].getElement(), this.ui.curve_listings[index + 2].getElement())
+                    this.side_panel_div.insertBefore(
+                        this.ui.curve_listings[index].getElement(),
+                        this.ui.curve_listings[index + 2].getElement(),
+                    );
                 else
-                    this.side_panel_div.insertBefore(this.ui.curve_listings[index].getElement(), this.ui.newCurveButton)
+                    this.side_panel_div.insertBefore(
+                        this.ui.curve_listings[index].getElement(),
+                        this.ui.newCurveButton,
+                    );
             }
             swap(this.scene_ref._beziers, index, index + direction);
             swap(this.ui.curve_listings, index, index + direction);
         }
         this.updateListings();
-    } 
+    }
 
     toggleHideListing(index: number) {
-        this.scene_ref._beziers[index].hidden = !this.scene_ref._beziers[index].hidden;
+        this.scene_ref._beziers[index].hidden =
+            !this.scene_ref._beziers[index].hidden;
     }
 
     deleteListing(index: number) {
@@ -93,25 +132,38 @@ export class SidePanel {
         let new_curve = copyBezier(this.scene_ref._beziers[index]);
         this.scene_ref._beziers.splice(index + 1, 0, new_curve);
 
-        console.log(this.scene_ref._beziers)
+        console.log(this.scene_ref._beziers);
 
-        this.insertListing(new CurveListing(this.scene_ref, index + 1, this.listing_callbacks), index + 1);
+        this.insertListing(
+            new CurveListing(this.scene_ref, index + 1, this.listing_callbacks),
+            index + 1,
+        );
     }
 
     createNewListing(index?: number): any {
-        this.scene_ref.createNewCurve(prompt('name for the new curve'));
+        this.scene_ref.createNewCurve(prompt("name for the new curve"));
 
-        let listing = new CurveListing(this.scene_ref, this.scene_ref._beziers.length - 1, this.listing_callbacks);
+        let listing = new CurveListing(
+            this.scene_ref,
+            this.scene_ref._beziers.length - 1,
+            this.listing_callbacks,
+        );
 
         this.insertListing(listing);
     }
 
     insertListing(listing: CurveListing, index?: number): any {
         if (index && index < this.ui.curve_listings.length) {
-            this.side_panel_div.insertBefore(listing.getElement(), this.ui.curve_listings[index].getElement());
+            this.side_panel_div.insertBefore(
+                listing.getElement(),
+                this.ui.curve_listings[index].getElement(),
+            );
             this.ui.curve_listings.splice(index, 0, listing);
         } else {
-            this.side_panel_div.insertBefore(listing.getElement(), this.ui.newCurveButton);
+            this.side_panel_div.insertBefore(
+                listing.getElement(),
+                this.ui.newCurveButton,
+            );
             this.ui.curve_listings.push(listing);
         }
 
@@ -119,7 +171,9 @@ export class SidePanel {
     }
 
     removeListing(index: number): any {
-        this.side_panel_div.removeChild(this.ui.curve_listings[index].getElement());
+        this.side_panel_div.removeChild(
+            this.ui.curve_listings[index].getElement(),
+        );
         this.ui.curve_listings.splice(index, 1);
 
         this.updateListings();

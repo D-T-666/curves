@@ -1,4 +1,4 @@
-import { Scene } from "../../sketch/scene";
+import { Scene } from "../../sketch/scene/main";
 import { createCurveListingCheckbox } from "./checkbox";
 import { createCurveListingTitle } from "./title";
 import { createCurveListingToolBox } from "./toolbox/create";
@@ -17,7 +17,7 @@ export class CurveListing {
         this.curve_index = _curve_index;
         this.parent_callbacks = _callbacks;
 
-        this.focused = this.scene_ref._active_bezier === this.curve_index;
+        this.focused = this.scene_ref.is_focused(this.curve_index);
 
         this.callbacks = {
             delete: (e: Event) => this.delete(e),
@@ -25,18 +25,22 @@ export class CurveListing {
             toggle_hide: () => this.toggle_hide(),
             move_up: (e: Event) => this.move_up(e),
             move_down: (e: Event) => this.move_down(e),
-        }
+            anchor_edit: (e: Event) => this.anchor_edit(e),
+        };
 
-        this.element = document.createElement('button');
-    
-        this.element.addEventListener('click', (e) => this.focus())
-    
-        this.element.classList.add('curve-listing');
-    
+        this.element = document.createElement("button");
+
+        this.element.addEventListener("click", (e) => this.focus());
+
+        this.element.classList.add("curve-listing");
+
         this.ui = {
-            checkbox: createCurveListingCheckbox(!this.scene_ref._beziers[this.curve_index].hidden, this.callbacks.toggle_hide),
+            checkbox: createCurveListingCheckbox(
+                !this.scene_ref._beziers[this.curve_index].hidden,
+                this.callbacks.toggle_hide,
+            ),
             title: createCurveListingTitle(this.curve_index, this.scene_ref),
-            toolbox: createCurveListingToolBox(this.curve_index, this.scene_ref, this.callbacks),
+            toolbox: createCurveListingToolBox(this.callbacks),
         };
         this.element.appendChild(this.ui.checkbox);
         this.element.appendChild(this.ui.title);
@@ -45,20 +49,24 @@ export class CurveListing {
         this.ui.title.disabled = true;
     }
 
-    unfocus() {
+    anchor_edit(e: Event) {
+        // e.stopPropagation();
+
+        this.parent_callbacks.anchor_edit(this.curve_index);
+    }
+
+    defocus() {
         this.ui.title.disabled = true;
 
-        this.element.classList.remove('active');
+        this.element.classList.remove("active");
     }
 
     focus(originator?: boolean) {
-        if (!originator)
-            this.parent_callbacks.focus(this.curve_index);
+        if (!originator) this.parent_callbacks.focus(this.curve_index);
 
-        this.element.classList.add('active');
+        this.element.classList.add("active");
 
-        if (!originator)
-            this.ui.title.disabled = false;
+        if (!originator) this.ui.title.disabled = false;
     }
 
     move_up(e: Event) {

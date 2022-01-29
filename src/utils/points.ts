@@ -1,20 +1,33 @@
 import p5 = require("p5");
 
 export interface BoundingBox {
-    p1: p5.Vector,
-    p2: p5.Vector,
-    c: p5.Vector,
-    cg?: p5.Vector,
-    r?: number,
-};
-
-export const pointInBox = (p: p5, point: p5.Vector, bb: BoundingBox): boolean => {
-    return point.x > bb.p1.x && point.x < bb.p2.x && point.y > bb.p1.y && point.y < bb.p2.y;
+    p1: p5.Vector;
+    p2: p5.Vector;
+    c: p5.Vector;
+    cg?: p5.Vector;
+    r?: number;
 }
 
-export const getBoundingBox = (p: p5, points: p5.Vector[], get_radius?: boolean): BoundingBox => {
+export const pointInBox = (
+    p: p5,
+    point: p5.Vector,
+    bb: BoundingBox,
+): boolean => {
+    return (
+        point.x > bb.p1.x &&
+        point.x < bb.p2.x &&
+        point.y > bb.p1.y &&
+        point.y < bb.p2.y
+    );
+};
+
+export const getBoundingBox = (
+    p: p5,
+    points: p5.Vector[],
+    get_radius?: boolean,
+): BoundingBox => {
     let bb: BoundingBox = {
-        p1: p.createVector( Infinity,  Infinity),
+        p1: p.createVector(Infinity, Infinity),
         p2: p.createVector(-Infinity, -Infinity),
         c: p.createVector(0, 0),
     };
@@ -40,10 +53,9 @@ export const getBoundingBox = (p: p5, points: p5.Vector[], get_radius?: boolean)
         // This is slow, that's why it's optional
         for (let i = 0; i < points.length; i++) {
             let d = points[i].copy().sub(bb.c).magSq();
-            if (d > bb.r * bb.r)
-                bb.r = p.sqrt(d);
+            if (d > bb.r * bb.r) bb.r = p.sqrt(d);
         }
     }
 
     return bb;
-}
+};

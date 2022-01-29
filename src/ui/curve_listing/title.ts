@@ -1,4 +1,4 @@
-import { Scene } from "../../sketch/scene";
+import { Scene } from "../../sketch/scene/main";
 
 export const createCurveListingTitle = (curve_index: number, scene_ref: Scene): Element => {
     let title = document.createElement('textarea');

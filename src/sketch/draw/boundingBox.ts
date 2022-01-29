@@ -3,12 +3,27 @@ import { getBoundingBox } from "../../utils/points";
 import { Bezier } from "../bezier";
 import { getCurve } from "../getCurve";
 
-export const drawBoundingBox = (p: p5, world_transforms: any, b: Bezier, mouse: p5.Vector, pmouse: p5.Vector, colors: any, interaction_vars: any) => {
+export const drawBoundingBox = (
+    p: p5,
+    world_transforms: any,
+    b: Bezier,
+    mouse: p5.Vector,
+    pmouse: p5.Vector,
+    colors: any,
+    interaction_vars: any,
+) => {
     const r = 6;
 
-    let bb = getBoundingBox(p, getCurve(p, b._anchors, 15, world_transforms.apply), true);
+    let bb = getBoundingBox(
+        p,
+        getCurve(p, b._anchors, 15, world_transforms.apply),
+        true,
+    );
 
-    let overscan = p.createVector(r + b._draw_params._thickness, r + b._draw_params._thickness);
+    let overscan = p.createVector(
+        r + b._draw_params._thickness,
+        r + b._draw_params._thickness,
+    );
     bb.p1.sub(overscan).sub(bb.c);
     bb.p2.add(overscan).sub(bb.c);
     bb.r += r * 2 * p.sqrt(2);
@@ -17,7 +32,7 @@ export const drawBoundingBox = (p: p5, world_transforms: any, b: Bezier, mouse: 
         p.createVector(bb.p1.x, bb.p1.y),
         p.createVector(bb.p2.x, bb.p1.y),
         p.createVector(bb.p1.x, bb.p2.y),
-        p.createVector(bb.p2.x, bb.p2.y)
+        p.createVector(bb.p2.x, bb.p2.y),
     ];
 
     p.push();
@@ -28,7 +43,7 @@ export const drawBoundingBox = (p: p5, world_transforms: any, b: Bezier, mouse: 
     // p.fill(colors.bgd);
     p.noFill();
 
-    p.cursor("default")
+    p.cursor("default");
 
     if (interaction_vars.grabbed === 9 && p.mouseIsPressed) {
         p.strokeWeight(r);
@@ -37,7 +52,9 @@ export const drawBoundingBox = (p: p5, world_transforms: any, b: Bezier, mouse: 
         p.strokeWeight(1);
         p.stroke(colors.fg);
         p.ellipse(0, 0, bb.r * 2, bb.r * 2);
-        p.rotate(world_transforms.unapply(bb.c).sub(mouse).heading() - p.HALF_PI);
+        p.rotate(
+            world_transforms.unapply(bb.c).sub(mouse).heading() - p.HALF_PI,
+        );
     } else {
         p.strokeWeight(r);
         p.stroke(colors.bgd);
@@ -47,13 +64,21 @@ export const drawBoundingBox = (p: p5, world_transforms: any, b: Bezier, mouse: 
         p.rect(bb.p1.x, bb.p1.y, bb.p2.x - bb.p1.x, bb.p2.y - bb.p1.y);
 
         for (let i = 0; i < 8; i++) {
-            let c = i < 4 ? cs[i] : cs[[0, 1, 3, 2][i - 4]].copy().add(cs[[1, 3, 2, 0][i - 4]]).div(2);
+            let c =
+                i < 4
+                    ? cs[i]
+                    : cs[[0, 1, 3, 2][i - 4]]
+                          .copy()
+                          .add(cs[[1, 3, 2, 0][i - 4]])
+                          .div(2);
 
             if (interaction_vars.grabbed === i) {
                 p.fill(colors.bgd);
                 p.rect(c.x - r, c.y - r, r * 2, r * 2);
                 if (i < 4)
-                    p.cursor((i & 1) === (i & 2) / 2 ? "nwse-resize" : "nesw-resize");
+                    p.cursor(
+                        (i & 1) === (i & 2) / 2 ? "nwse-resize" : "nesw-resize",
+                    );
                 else if (i < 8)
                     p.cursor(i < 8 && i % 2 === 0 ? "ns-resize" : "ew-resize");
             } else {
@@ -66,8 +91,12 @@ export const drawBoundingBox = (p: p5, world_transforms: any, b: Bezier, mouse: 
             p.cursor("move");
         }
 
-        p.line(0,  bb.p1.y - r * ((interaction_vars.grabbed === 4) ? 1 : 0.5), 
-               0, -bb.r    + r * ((interaction_vars.grabbed === 9) ? 1 : 0.5));
+        p.line(
+            0,
+            bb.p1.y - r * (interaction_vars.grabbed === 4 ? 1 : 0.5),
+            0,
+            -bb.r + r * (interaction_vars.grabbed === 9 ? 1 : 0.5),
+        );
     }
 
     if (interaction_vars.grabbed === 9) {
@@ -76,8 +105,8 @@ export const drawBoundingBox = (p: p5, world_transforms: any, b: Bezier, mouse: 
         p.cursor("move");
     } else {
         p.fill(colors.bg);
-        p.rect(-r * 0.5, - bb.r - r / 2, r, r);
+        p.rect(-r * 0.5, -bb.r - r / 2, r, r);
     }
 
     p.pop();
-}
+};

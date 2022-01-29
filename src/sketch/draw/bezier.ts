@@ -1,20 +1,30 @@
 import * as p5 from "p5";
 import { Bezier } from "../bezier";
 import { drawLineCap } from "./lineCaps";
-import { drawLineSegmentWithBorders, drawLineSegmentWithBorders_lines } from "./lineSegmentWithBorders";
+import {
+    drawLineSegmentWithBorders,
+    drawLineSegmentWithBorders_lines,
+} from "./lineSegmentWithBorders";
 import { getCurve } from "../getCurve";
 
 export interface bezierDrawParams {
-    _resolution: number,
-    _thickness: number,
-    _stroke?: Function | p5.Color,
-    _fill?: Function | p5.Color,
-    _stroke_weight?: Function | number,
-    _fill_weight?: Function | number,
-    _draw_caps?: number,
+    _resolution: number;
+    _thickness: number;
+    _stroke?: Function | p5.Color;
+    _fill?: Function | p5.Color;
+    _stroke_weight?: Function | number;
+    _fill_weight?: Function | number;
+    _draw_caps?: number;
 }
 
-export const drawBezierCurve = (p: p5, world_transform: any, b: Bezier, kind: string, interaction_vars: any, dp?: bezierDrawParams | boolean) => {
+export const drawBezierCurve = (
+    p: p5,
+    world_transform: any,
+    b: Bezier,
+    kind: string,
+    interaction_vars: any,
+    dp?: bezierDrawParams | boolean,
+) => {
     let used_dp: bezierDrawParams;
 
     let anchors_to_use: p5.Vector[];
@@ -25,10 +35,8 @@ export const drawBezierCurve = (p: p5, world_transform: any, b: Bezier, kind: st
         anchors_to_use = b._anchors;
     }
 
-    if (dp instanceof Object)
-        used_dp = dp;
-    else if (dp)
-        used_dp = b._draw_params;
+    if (dp instanceof Object) used_dp = dp;
+    else if (dp) used_dp = b._draw_params;
     else
         used_dp = {
             _resolution: p.constrain(b._anchors.length * 5, 25, 100),
@@ -39,7 +47,7 @@ export const drawBezierCurve = (p: p5, world_transform: any, b: Bezier, kind: st
             _draw_caps: 15,
             _thickness: 10,
         };
-    
+
     let resolution = used_dp._resolution;
 
     let curve_hash = anchors_to_use.reduce((a, b) => a + b.magSq(), resolution);
@@ -51,7 +59,10 @@ export const drawBezierCurve = (p: p5, world_transform: any, b: Bezier, kind: st
         curve = getCurve(p, anchors_to_use, resolution);
 
         b._p_curve = curve;
-        b._p_curve_hash = anchors_to_use.reduce((a, b) => a + b.magSq(), resolution);
+        b._p_curve_hash = anchors_to_use.reduce(
+            (a, b) => a + b.magSq(),
+            resolution,
+        );
     }
 
     curve = curve.map(world_transform.apply);
@@ -70,18 +81,38 @@ export const drawBezierCurve = (p: p5, world_transform: any, b: Bezier, kind: st
     }
 
     if (used_dp._draw_caps && used_dp._draw_caps & 1) {
-        drawLineCap(p, used_dp, curve[0], curve[1], 0, (used_dp._draw_caps & 4) !== 0);
+        drawLineCap(
+            p,
+            used_dp,
+            curve[0],
+            curve[1],
+            0,
+            (used_dp._draw_caps & 4) !== 0,
+        );
     }
 
     for (let i = 0; i < resolution; i++) {
-        line_segment_draw_function(p, [
-            curve[i - Number(i > 0)], 
-            curve[i], 
-            curve[i + 1], 
-            curve[i + 1 + Number(i < resolution - 1)], 
-        ], used_dp, i / (resolution), (i + 1) / (resolution));
+        line_segment_draw_function(
+            p,
+            [
+                curve[i - Number(i > 0)],
+                curve[i],
+                curve[i + 1],
+                curve[i + 1 + Number(i < resolution - 1)],
+            ],
+            used_dp,
+            i / resolution,
+            (i + 1) / resolution,
+        );
     }
 
     if (used_dp._draw_caps && used_dp._draw_caps & 2)
-        drawLineCap(p, used_dp, curve[resolution], curve[resolution - 1], 1, (used_dp._draw_caps & 8) !== 0);
-}
+        drawLineCap(
+            p,
+            used_dp,
+            curve[resolution],
+            curve[resolution - 1],
+            1,
+            (used_dp._draw_caps & 8) !== 0,
+        );
+};

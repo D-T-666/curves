@@ -1,6 +1,6 @@
 import * as p5 from "p5";
 import './scss/style.scss';
-import { Scene } from "./sketch/scene";
+import { Scene } from "./sketch/scene/main";
 import { SidePanel } from "./ui/main";
 
 
@@ -13,7 +13,7 @@ new p5((p: p5): void => {
 
         main_scene = new Scene(p);
         side_panel = new SidePanel(p, main_scene);
-        main_scene.set_ui_callbacks(side_panel.scene_callbacks);
+        main_scene.ui = side_panel.scene_callbacks;
     }
 
     p.draw = (): void => {

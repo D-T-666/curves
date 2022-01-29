@@ -1,34 +1,41 @@
 import * as p5 from "p5";
 
-const lerp_vector = (p: p5, a: p5.Vector, b: p5.Vector, t: number): p5.Vector => {
-    return p.createVector(
-        p.lerp(a.x, b.x, t),
-        p.lerp(a.y, b.y, t)
-    )
+const lerp_vector = (
+    p: p5,
+    a: p5.Vector,
+    b: p5.Vector,
+    t: number,
+): p5.Vector => {
+    return p.createVector(p.lerp(a.x, b.x, t), p.lerp(a.y, b.y, t));
 };
 
 // Regular Bezier
-export const getCurve = (p: p5, anchors: p5.Vector[], resolution: number, transform?: Function): p5.Vector[] => {
+export const getCurve = (
+    p: p5,
+    anchors: p5.Vector[],
+    resolution: number,
+    transform?: Function,
+): p5.Vector[] => {
     let points: p5.Vector[] = [];
 
     for (let i = 0; i < resolution + 1; i++) {
         let a = [...anchors];
-        
+
         for (let j = anchors.length; j >= 0; j--) {
             for (let q = 0; q < j - 1; q++) {
-                a[q] = p.createVector(p.lerp(a[q].x, a[q+1].x, i / resolution), p.lerp(a[q].y, a[q+1].y, i / resolution));
+                a[q] = p.createVector(
+                    p.lerp(a[q].x, a[q + 1].x, i / resolution),
+                    p.lerp(a[q].y, a[q + 1].y, i / resolution),
+                );
             }
         }
-        
-        if (transform)
-            points.push(transform(a[0]));
-        else
-            points.push(a[0]);
+
+        if (transform) points.push(transform(a[0]));
+        else points.push(a[0]);
     }
 
     return points;
-}
-
+};
 
 // // Cubic B-spline
 // export const getCurve = (p: p5, b_anchors: p5.Vector[], resolution: number, transform?: Function): p5.Vector[] => {
@@ -78,12 +85,12 @@ export const getCurve = (p: p5, anchors: p5.Vector[], resolution: number, transf
 //             anchors[bezier_index * 3 + 3].copy()
 //         ];
 
-//         a[0] = 
+//         a[0] =
 //             a[0].mult(  -t*t*t + 3*t*t - 3*t + 1).add(
 //             a[1].mult( 3*t*t*t - 6*t*t + 3*t    )).add(
 //             a[2].mult(-3*t*t*t + 3*t*t          )).add(
 //             a[3].mult(   t*t*t                  ));
-        
+
 //         points.push(transform ? transform(a[0]) : a[0]);
 //     }
 

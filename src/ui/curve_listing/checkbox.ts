@@ -1,5 +1,3 @@
-import { Scene } from "../../sketch/scene";
-
 export const createCurveListingCheckbox = (state: boolean, callback: (e:Event) => {}): Element => {
     let checkbox = document.createElement('input');
 

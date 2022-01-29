@@ -56,22 +56,22 @@ export const interactBoundingBox = (p: p5, world_transforms: any, b: Bezier, mou
                 case 0:
                     d = (cs[3].y - mouse.y) / (cs[3].y - pmouse.y);
                     s = d + 4 * r * (d - 1) / (bb.p2.y - bb.p1.y - 4 * r);
-                    b._pos.y -= (s - 1) * (bb.p2.y - b._pos.y);
+
                     break;
                 case 1: 
                     d = (cs[0].x - mouse.x) / (cs[0].x - pmouse.x);
                     s = d + 4 * r * (d - 1) / (cs[3].x - cs[0].x - 4 * r);
-                    b._pos.x -= (s - 1) * (bb.p1.x - b._pos.x);
+
                     break;
                 case 2: 
                     d = (cs[0].y - mouse.y) / (cs[0].y - pmouse.y);
                     s = d + 4 * r * (d - 1) / (cs[3].y - cs[0].y - 4 * r);
-                    b._pos.y -= (s - 1) * (bb.p1.y - b._pos.y);
+
                     break;
                 case 3:
                     d = (cs[3].x - mouse.x) / (cs[3].x - pmouse.x);
                     s = d + 4 * r * (d - 1) / (cs[3].x - cs[0].x - 4 * r);
-                    b._pos.x -= (s - 1) * (bb.p2.x - b._pos.x);
+
                     break;
             }
 
