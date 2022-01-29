@@ -9,7 +9,7 @@ export const drawBezierAnchors = (p: p5, world_transforms: any, b: Bezier, mouse
     let hovering = -1;
 
 	for (let i = 0; i < b._anchors.length; i++) {
-		const is_hovering = p.dist(p.pmouseX, p.pmouseY, b._anchors[i].x * b._size + b._pos.x, b._anchors[i].y * b._size + b._pos.y) < r * 1.4141;
+		const is_hovering = p.dist(p.pmouseX, p.pmouseY, b._anchors[i].x, b._anchors[i].y) < r * 1.4141;
 		mouse_on_anchor = mouse_on_anchor || is_hovering;
 		if (is_hovering) hovering = i;
 	}

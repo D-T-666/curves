@@ -5,7 +5,6 @@ import { bezierDrawParams } from "./draw/bezier";
 export interface PlainBezier {
     _anchors: number[][];
     _name: string;
-    _size: number;
     _base_line: number;
 }
 
@@ -15,6 +14,16 @@ export interface Bezier extends Omit<PlainBezier, '_anchors' | '_pos'> {
     _vars?: any;
     [key: string]: any;
 }
+
+export const copyBezier = (b: Bezier): Bezier => {
+    return {
+        ...b,
+        _anchors: b._anchors.map(a => a.copy()),
+        _name: b._name,
+        _base_line: b._base_line,
+        _vars: {...b._vars},
+    }
+};
 
 export const createBezier = (p: p5, name?: string): Bezier => {
     const _new_bezier: Bezier = {
@@ -26,8 +35,6 @@ export const createBezier = (p: p5, name?: string): Bezier => {
             p.createVector(1, 0),
         ],
         _name: name,
-        _pos: p.createVector(p.width / 2 - 50, p.height / 2 - 50),
-        _size: 100,
         _base_line: 2,
         _vars: {},
     };
@@ -37,7 +44,6 @@ export const createBezier = (p: p5, name?: string): Bezier => {
 
 export const getPlainBezier = (b: Bezier): PlainBezier => ({
     _name: b._name,
-    _size: b._size,
     _anchors: b._anchors.map(v => [ v.x, v.y ]),
     _base_line: 1,
 });

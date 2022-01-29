@@ -103,15 +103,6 @@ export class Scene {
                         break;
                 } 
             }
-            // let bb = getBoundingBox(this._p5, getCurve(this._p5, this._beziers[i]._anchors, 20));
-            // if (!(this._active_bezier_mode === 0 && this._active_bezier > -1)&& pointInBox(this._p5, mouse, bb)) {
-            //     bb.p1 = this._world_transform.apply(bb.p1);
-            //     bb.p2 = this._world_transform.apply(bb.p2);
-            //     this._p5.stroke(this._colors.fgd);
-            //     this._p5.strokeWeight(2);
-            //     this._p5.noFill();
-            //     this._p5.rect(bb.p1.x, bb.p1.y, bb.p2.x-bb.p1.x, bb.p2.y-bb.p1.y);
-            // }
         }
         this._interaction_vars.pmouseIsPressed = this._p5.mouseIsPressed;
     }
@@ -144,13 +135,12 @@ export class Scene {
             this._interaction_vars.grabbed = 8;
         }
 
-        this._interaction_vars.defocus_all = false;
-
         if (this._interaction_vars.change_mode) {
             this._active_bezier_mode = 1 - this._active_bezier_mode;
             this._interaction_vars.change_mode = false;
         }
 
+        this._interaction_vars.defocus_all = false;
         this._interaction_vars.doubleClicked = false;
     }
 

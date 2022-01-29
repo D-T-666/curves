@@ -91,12 +91,11 @@ export const interactBoundingBox = (p: p5, world_transforms: any, b: Bezier, mou
                 a.sub(c).mult(d).add(c)
             });
         } else if (hovering === 9) {
-            b._new_anchors = b._anchors.map((a: p5.Vector) => {
-                return a.copy()
-                    .sub(bb.c)
-                    .rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI)
-                    .add(bb.c);
-            });
+            b._new_anchors = b._anchors.map((a: p5.Vector) =>  a.copy()
+                .sub(bb.c)
+                .rotate(bb.c.copy().sub(mouse).heading() - p.HALF_PI)
+                .add(bb.c)
+            );
         } else {
             interaction_vars.defocus_all = true;
         }

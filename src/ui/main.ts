@@ -1,4 +1,5 @@
 import p5 = require("p5");
+import { copyBezier } from "../sketch/bezier";
 import { Scene } from "../sketch/scene";
 import { swap } from "../utils/array";
 import { createNewCurveButton } from "./createNewCurveButton";
@@ -89,7 +90,10 @@ export class SidePanel {
     }
 
     duplicateListing(index: number) {
-        this.scene_ref._beziers.splice(index + 1, 0, {...this.scene_ref._beziers[index]});
+        let new_curve = copyBezier(this.scene_ref._beziers[index]);
+        this.scene_ref._beziers.splice(index + 1, 0, new_curve);
+
+        console.log(this.scene_ref._beziers)
 
         this.insertListing(new CurveListing(this.scene_ref, index + 1, this.listing_callbacks), index + 1);
     }
