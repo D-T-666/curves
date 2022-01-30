@@ -1,6 +1,6 @@
 #!/bin/bash
 
-toilet -F border --gay Curves
+figlet -f mono12.flf -c -t CURVES
 
 npm i
 npm run build
