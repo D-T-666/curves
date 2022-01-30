@@ -1,12 +1,12 @@
 import * as p5 from "p5";
-import './scss/style.scss';
+import "./scss/style.scss";
 import { Scene } from "./sketch/scene/main";
 import { SidePanel } from "./ui/main";
 
+let side_panel: SidePanel;
 
 new p5((p: p5): void => {
     let main_scene: Scene;
-    let side_panel: SidePanel;
 
     p.setup = (): void => {
         p.createCanvas(p.windowWidth, p.windowHeight);
@@ -14,7 +14,7 @@ new p5((p: p5): void => {
         main_scene = new Scene(p);
         side_panel = new SidePanel(p, main_scene);
         main_scene.ui = side_panel.scene_callbacks;
-    }
+    };
 
     p.draw = (): void => {
         main_scene.interact();
@@ -24,13 +24,13 @@ new p5((p: p5): void => {
         p.noStroke();
         p.fill(255, 0, 0);
         p.text(`fps: ${p.round(p.frameRate())}`, 0, 10);
-    }
+    };
 
     p.doubleClicked = (): void => {
         main_scene.doubleClicked();
-    }
+    };
 
     p.mouseWheel = (event: any): void => {
-        main_scene.mousePan(event)
-    }
+        main_scene.mousePan(event);
+    };
 });

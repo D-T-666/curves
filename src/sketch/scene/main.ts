@@ -1,6 +1,8 @@
 import p5 = require("p5");
 import { Bezier, createBezier } from "../bezier";
 
+// TODO: refactor this file
+
 export class Scene {
     _beziers: Bezier[] = [];
     _p5: p5;
@@ -49,7 +51,7 @@ export class Scene {
         this._world_transform = {
             offset: this._p5.createVector(
                 this._p5.width / 2,
-                this._p5.height / 2
+                this._p5.height / 2,
             ),
             scale: 100,
             apply: (point: p5.Vector): p5.Vector =>
@@ -71,8 +73,8 @@ export class Scene {
         this._beziers.push(
             createBezier(
                 this._p5,
-                name ? name : `curve ${this._beziers.length}`
-            )
+                name ? name : `curve ${this._beziers.length}`,
+            ),
         );
 
         this._beziers[this._beziers.length - 1]._draw_params = {
@@ -83,14 +85,14 @@ export class Scene {
                         this._p5.abs(
                             this._p5.sin(
                                 t * this._p5.TWO_PI * 1 +
-                                    this._p5.frameCount * 0.05
-                            )
-                        ) * 0.5
+                                    this._p5.frameCount * 0.05,
+                            ),
+                        ) * 0.5,
                     ) + 0.5;
                 return this._p5.color(
                     (t * 127 + 127) * b,
                     127 * b,
-                    (1 - t) * 255 * b
+                    (1 - t) * 255 * b,
                 );
             },
             _stroke: this._p5.color(255),
@@ -98,16 +100,18 @@ export class Scene {
                 return this._p5.abs(
                     this._p5.abs(
                         this._p5.sin(
-                            t * this._p5.TWO_PI * 1 + this._p5.frameCount * 0.05
-                        )
+                            t * this._p5.TWO_PI * 1 +
+                                this._p5.frameCount * 0.05,
+                        ),
                     ) *
                         16 +
-                        0
+                        0,
                 );
             },
             _stroke_weight: 0,
-            _draw_caps: 0,
+            _caps: 0,
             _thickness: 6,
+            _kind: "thick",
         };
     }
 }

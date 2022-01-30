@@ -1,8 +1,8 @@
-import { bezierDrawParams } from "./bezier";
+import { curveDrawParams } from "./curve";
 
 export const drawLineCap = (
     p: p5,
-    dp: bezierDrawParams,
+    dp: curveDrawParams,
     p1: p5.Vector,
     p2: p5.Vector,
     t: number,

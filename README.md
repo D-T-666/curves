@@ -30,3 +30,7 @@ to run the dev server: `npm run dev`
   - [ ] ability to specify the baseline
   - [ ] order of the anchors
   - [ ] bounding box
+- [ ] curve customization
+  - [ ] styling
+  - [ ] picking between kinds of curves (nth order Bezier, Cubic B-spline, Quadratic B-spline, ...)
+  - [ ] animation

@@ -1,9 +1,9 @@
-import { bezierDrawParams } from "./bezier";
+import { curveDrawParams } from "./curve";
 
-export const drawLineSegmentWithBorders = (
+export const drawLineSegmentRibbon = (
     p: p5,
     ps: p5.Vector[],
-    dp: bezierDrawParams,
+    dp: curveDrawParams,
     t1: number,
     t2: number,
 ) => {
@@ -99,10 +99,10 @@ export const drawLineSegmentWithBorders = (
     }
 };
 
-export const drawLineSegmentWithBorders_lines = (
+export const drawLineSegmentThick = (
     p: p5,
     ps: p5.Vector[],
-    dp: bezierDrawParams,
+    dp: curveDrawParams,
     t1: number,
     t2: number,
 ) => {

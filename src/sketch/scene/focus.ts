@@ -1,5 +1,7 @@
 import { Scene } from "./main";
 
+// TODO: refactor this file
+
 Scene.prototype.set_focus_mode = function (mode: "anchor-edit" | "transform") {
     this.focus_mode = ["anchor-edit", "transform"].indexOf(mode);
     console.log(this.focus_mode);

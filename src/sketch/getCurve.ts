@@ -23,15 +23,11 @@ export const getCurve = (
 
         for (let j = anchors.length; j >= 0; j--) {
             for (let q = 0; q < j - 1; q++) {
-                a[q] = p.createVector(
-                    p.lerp(a[q].x, a[q + 1].x, i / resolution),
-                    p.lerp(a[q].y, a[q + 1].y, i / resolution),
-                );
+                a[q] = lerp_vector(p, a[q], a[q + 1], i / resolution);
             }
         }
 
-        if (transform) points.push(transform(a[0]));
-        else points.push(a[0]);
+        points.push(transform ? transform(a[0]) : a[0]);
     }
 
     return points;
@@ -39,6 +35,7 @@ export const getCurve = (
 
 // // Cubic B-spline
 // export const getCurve = (p: p5, b_anchors: p5.Vector[], resolution: number, transform?: Function): p5.Vector[] => {
+//      // TODO: refactor this function
 //     let points: p5.Vector[] = [];
 
 //     let anchors: p5.Vector[] = [ b_anchors[0], b_anchors[1] ];

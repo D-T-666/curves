@@ -1,6 +1,6 @@
 import { Scene } from "../../../sketch/scene/main";
 
-// export const createEditButton = (curve_index: number, scene_ref: Scene): Element
+// TODO: clean up this file
 
 export const createCurveListingToolBox = (callbacks: any): Element => {
     let toolbox = document.createElement("div");

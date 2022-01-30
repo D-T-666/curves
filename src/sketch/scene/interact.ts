@@ -4,12 +4,14 @@ import { interactAnchors } from "../interact/anchors";
 import { interactBoundingBox } from "../interact/boundingBox";
 import { Scene } from "./main";
 
+// TODO: refactor this file
+
 Scene.prototype.interact = function () {
     const mouse = this._world_transform.unapply(
-        this._p5.createVector(this._p5.mouseX, this._p5.mouseY)
+        this._p5.createVector(this._p5.mouseX, this._p5.mouseY),
     );
     const pmouse = this._world_transform.unapply(
-        this._p5.createVector(this._p5.pmouseX, this._p5.pmouseY)
+        this._p5.createVector(this._p5.pmouseX, this._p5.pmouseY),
     );
 
     let potential_new_active_bezier = -1;
@@ -24,7 +26,7 @@ Scene.prototype.interact = function () {
                         this._beziers[i],
                         mouse,
                         pmouse,
-                        this._interaction_vars
+                        this._interaction_vars,
                     );
                     break;
                 case 1:
@@ -34,7 +36,7 @@ Scene.prototype.interact = function () {
                         this._beziers[i],
                         mouse,
                         pmouse,
-                        this._interaction_vars
+                        this._interaction_vars,
                     );
                     break;
             }
@@ -48,8 +50,8 @@ Scene.prototype.interact = function () {
                 mouse,
                 getBoundingBox(
                     this._p5,
-                    getCurve(this._p5, this._beziers[i]._anchors, 20)
-                )
+                    getCurve(this._p5, this._beziers[i]._anchors, 20),
+                ),
             )
         ) {
             potential_new_active_bezier = i;

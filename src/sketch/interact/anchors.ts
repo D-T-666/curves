@@ -9,6 +9,7 @@ export const interactAnchors = (
     pmouse: p5.Vector,
     interaction_vars: any,
 ) => {
+    // TODO: refactor this function
     const r = 6 / world_transforms.scale;
 
     let hovering = -1;

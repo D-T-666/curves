@@ -1,6 +1,4 @@
-// import * as p5 from "p5";
-
-import { bezierDrawParams } from "./draw/bezier";
+import { curveDrawParams } from "./draw/curve";
 
 export interface PlainBezier {
     _anchors: number[][];
@@ -10,7 +8,7 @@ export interface PlainBezier {
 
 export interface Bezier extends Omit<PlainBezier, "_anchors" | "_pos"> {
     _anchors: p5.Vector[];
-    _draw_params?: bezierDrawParams;
+    _draw_params?: curveDrawParams;
     _vars?: any;
     [key: string]: any;
 }

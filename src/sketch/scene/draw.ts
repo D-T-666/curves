@@ -1,5 +1,5 @@
 import { drawBezierAnchors } from "../draw/anchors";
-import { drawBezierCurve } from "../draw/bezier";
+import { drawCurve } from "../draw/curve";
 import { drawBoundingBox } from "../draw/boundingBox";
 import { Scene } from "./main";
 
@@ -15,13 +15,11 @@ Scene.prototype.draw = function () {
 
     for (let i = 0; i < this._beziers.length; i++) {
         if (!this._beziers[i].hidden)
-            drawBezierCurve(
+            drawCurve(
                 this._p5,
                 this._world_transform,
                 this._beziers[i],
-                "t",
-                this._interaction_vars,
-                true,
+                this._beziers[i]._draw_params,
             );
 
         if (this.focused_curves.includes(i)) {
