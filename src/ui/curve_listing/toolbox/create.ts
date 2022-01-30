@@ -1,64 +1,40 @@
-import { Scene } from "../../../sketch/scene/main";
+function createButtonCollumn(
+    buttons: { text: string; callback: (e: Event) => any }[],
+): Element {
+    let container_div = document.createElement("div");
 
-// TODO: clean up this file
+    for (let btn of buttons) {
+        let button = document.createElement("button");
 
-export const createCurveListingToolBox = (callbacks: any): Element => {
+        button.innerText = btn.text;
+
+        button.addEventListener("click", btn.callback);
+
+        container_div.appendChild(button);
+    }
+
+    return container_div;
+}
+
+export const createCurveListingToolBox = (callbacks: {
+    [key: string]: (e: Event) => any;
+}): Element => {
     let toolbox = document.createElement("div");
 
     toolbox.classList.add("toolbox");
 
-    /* Create Edit Button */ {
-        let edit_button_div = document.createElement("div");
-        let edit_button = document.createElement("button");
+    let button_collumns = [
+        [{ text: "🖋", callback: callbacks.anchor_edit }],
+        [{ text: "📋", callback: callbacks.duplicate }],
+        [{ text: "🗑", callback: callbacks.delete }],
+        [
+            { text: "↑", callback: callbacks.move_up },
+            { text: "↓", callback: callbacks.move_down },
+        ],
+    ];
 
-        edit_button.innerText = "🖋";
-
-        edit_button.addEventListener("click", callbacks.anchor_edit);
-
-        edit_button_div.appendChild(edit_button);
-
-        toolbox.appendChild(edit_button_div);
-    }
-    /* Create duplicate Button */ {
-        let duplicate_button_div = document.createElement("div");
-        let duplicate_button = document.createElement("button");
-
-        duplicate_button.innerText = "📋";
-
-        duplicate_button.addEventListener("click", callbacks.duplicate);
-
-        duplicate_button_div.appendChild(duplicate_button);
-
-        toolbox.appendChild(duplicate_button_div);
-    }
-    /* Create delete Button */ {
-        let delete_button_div = document.createElement("div");
-        let delete_button = document.createElement("button");
-
-        delete_button.innerText = "🗑";
-
-        delete_button.addEventListener("click", callbacks.delete);
-
-        delete_button_div.appendChild(delete_button);
-
-        toolbox.appendChild(delete_button_div);
-    }
-    /* Create arrangement Buttons */ {
-        let arrangement_buttons_div = document.createElement("div");
-        let up_button = document.createElement("button");
-        let down_button = document.createElement("button");
-
-        up_button.innerText = "↑";
-        down_button.innerText = "↓";
-
-        up_button.addEventListener("click", callbacks.move_up);
-        down_button.addEventListener("click", callbacks.move_down);
-
-        arrangement_buttons_div.appendChild(up_button);
-        arrangement_buttons_div.appendChild(down_button);
-
-        toolbox.appendChild(arrangement_buttons_div);
-    }
+    for (let button_collumn of button_collumns)
+        toolbox.appendChild(createButtonCollumn(button_collumn));
 
     return toolbox;
 };
