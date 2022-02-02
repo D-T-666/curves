@@ -1,5 +1,6 @@
 import p5 = require("p5");
 import { Bezier, createBezier } from "../bezier";
+const { rgb2lab, lab2rgb, deltaE } = require("rgb-lab");
 
 // TODO: refactor this file
 
@@ -78,39 +79,22 @@ export class Scene {
         );
 
         this._beziers[this._beziers.length - 1]._draw_params = {
-            _resolution: 100,
+            _resolution: 200,
             _fill: (t: number): p5.Color => {
-                let b =
-                    this._p5.abs(
-                        this._p5.abs(
-                            this._p5.sin(
-                                t * this._p5.TWO_PI * 1 +
-                                    this._p5.frameCount * 0.05,
-                            ),
-                        ) * 0.5,
-                    ) + 0.5;
-                return this._p5.color(
-                    (t * 127 + 127) * b,
-                    127 * b,
-                    (1 - t) * 255 * b,
-                );
+                let a1 = rgb2lab([0, 100, 255]);
+                let a2 = rgb2lab([255, 140, 100]);
+                let col: [number, number, number] = lab2rgb([
+                    this._p5.lerp(a1[0], a2[0], t),
+                    this._p5.lerp(a1[1], a2[1], t),
+                    this._p5.lerp(a1[2], a2[2], t),
+                ]);
+                return this._p5.color(...col);
             },
-            _stroke: this._p5.color(255),
-            _fill_weight: (t: number): number => {
-                return this._p5.abs(
-                    this._p5.abs(
-                        this._p5.sin(
-                            t * this._p5.TWO_PI * 1 +
-                                this._p5.frameCount * 0.05,
-                        ),
-                    ) *
-                        16 +
-                        0,
-                );
-            },
+            _stroke: this._p5.color(0),
+            _fill_weight: 32,
             _stroke_weight: 0,
-            _caps: 0,
-            _thickness: 6,
+            _caps: 3,
+            _thickness: 0,
             _kind: "thick",
         };
     }

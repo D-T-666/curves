@@ -16,7 +16,6 @@ export const drawBoundingBox = (
     colors: any,
     interaction_vars: any,
 ) => {
-    // TODO: refactor this function
     const s = 6;
 
     // The Bounding Box - bb

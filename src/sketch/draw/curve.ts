@@ -74,7 +74,6 @@ export function drawCurve(
     b: Bezier,
     _dp?: curveDrawParams,
 ) {
-    // TODO: refactor this function
     const draw_params = _dp ? _dp : getDefaultDrawParams(p5, b);
 
     const resolution = draw_params._resolution;
