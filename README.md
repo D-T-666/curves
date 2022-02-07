@@ -1,4 +1,4 @@
-# Curves
+![logo banner](images/banner.png)
 
 A small Bezier curve editor built with p5.js
 
