@@ -42,7 +42,16 @@ export const interactBoundingBox = (
         p.createVector(bb.p2.x, bb.p2.y),
     ];
 
-    let rot_anchor = bb.c.copy().sub(p.createVector(0, bb.r + r * 3));
+    let rot_anchor = bb.c
+        .copy()
+        .sub(
+            p.createVector(
+                0,
+                bb.r +
+                    r * 3 +
+                    b._draw_params._thickness / world_transforms.scale,
+            ),
+        );
 
     let hovering = -1;
     if (interaction_vars.pmouseIsPressed) {

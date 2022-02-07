@@ -67,7 +67,39 @@ export class Scene {
                     .div(this._world_transform.scale),
         };
 
-        this.createNewCurve();
+        if (window.localStorage.getItem("has_saved_data")) {
+            this._beziers = readCurvesFromLocalStorage(this._p5);
+
+            this._beziers.forEach((bezier) => {
+                bezier._draw_params = {
+                    _resolution: 75,
+                    _fill: (t: number): p5.Color => {
+                        let a1 = rgb2lab([0, 100, 255]);
+                        let a2 = rgb2lab([255, 140, 100]);
+                        let col: [number, number, number] = lab2rgb([
+                            this._p5.lerp(a1[0], a2[0], t),
+                            this._p5.lerp(a1[1], a2[1], t),
+                            this._p5.lerp(a1[2], a2[2], t),
+                        ]);
+                        return this._p5.color(...col);
+                    },
+                    _stroke: this._p5.color(0),
+                    _fill_weight: 32,
+                    _stroke_weight: 0,
+                    _caps: 3,
+                    _thickness: 32,
+                    _kind: "thick",
+                };
+            });
+        } else {
+            this.createNewCurve();
+            writeCurvesToLocalStorage(this._beziers);
+        }
+
+        window.addEventListener("beforeunload", (e) => {
+            writeCurvesToLocalStorage(this._beziers);
+            window.localStorage.setItem("has_saved_data", "true");
+        });
     }
 
     createNewCurve(name?: string) {
@@ -79,7 +111,7 @@ export class Scene {
         );
 
         this._beziers[this._beziers.length - 1]._draw_params = {
-            _resolution: 200,
+            _resolution: 75,
             _fill: (t: number): p5.Color => {
                 let a1 = rgb2lab([0, 100, 255]);
                 let a2 = rgb2lab([255, 140, 100]);
@@ -94,7 +126,7 @@ export class Scene {
             _fill_weight: 32,
             _stroke_weight: 0,
             _caps: 3,
-            _thickness: 0,
+            _thickness: 32,
             _kind: "thick",
         };
     }
@@ -103,3 +135,7 @@ export class Scene {
 import "./focus";
 import "./interact";
 import "./draw";
+import {
+    readCurvesFromLocalStorage,
+    writeCurvesToLocalStorage,
+} from "../storage/localStorage";
