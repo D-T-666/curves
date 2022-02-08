@@ -40,7 +40,7 @@ export class SidePanel {
 
         this.previous_listings = [];
 
-        this.side_panel_div = document.getElementById("side-panel");
+        this.side_panel_div = document.getElementById("curve-listings");
         this.side_panel_div.addEventListener("click", (e) =>
             e.stopPropagation(),
         );

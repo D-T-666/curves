@@ -1,47 +1,61 @@
-$bgd: #1f1e2488;
+$bgc: #3a393f88;
 $bg: #19181e;
 $fg: #fff;
-$fgd: #fff6;
+$fgc: #fff6;
 
 body {
     margin: 0;
     padding: 0;
     overscroll-behavior: none;
+    display: flex;
 
-    #side-panel-container {
-        position: absolute;
+    #left-pane {
+        // position: absolute;
         width: 332px;
-        height: calc(100vh - 232px);
+
         // background-color: white;
         display: flex;
         flex-direction: column;
 
-        #side-panel {
+        >div+div {
+            border-top: 2px solid $bgc;
+
+        }
+
+        #curve-listings {
             display: flex;
             flex-direction: column;
-            margin: 16px;
-            background-color: $bgd;
-            backdrop-filter: blur(6px);
-            box-shadow: 0 0 16px $bgd;
-            border-radius: 16px;
+            background-color: $bg;
             overflow-y: auto;
-
+            flex-basis: calc(100vh - 232px);
+            
             #new-curve {
+                align-self: center;
                 position: sticky;
-                bottom: 0;
-                width: 100%;
+                bottom: 8px;
+                // width: 100%;
                 border: none;
+                border-radius: 8px;
+                margin-top: 16px;
                 padding: 8px;
                 font-size: 12px;
                 font-family: monospace;
                 color: $fg;
-                background-color: transparent;
+                background-color: $bg;
                 user-select: none;
+                width: fit-content;
+
 
                 &:hover {
-                    background-color: $bgd;
+                    background-color: $bgc;
                 }
             }
+        }
+
+        #tool-box {
+            // display: ;
+            height: 232px;;
+            background-color: $bg;
         }
     }
 }
@@ -58,7 +72,7 @@ body {
     border: none;
 
     &:hover, &.active {
-        background-color: $bgd;  
+        background-color: $bgc;  
 
         .toolbox {
             opacity: 1;
@@ -83,7 +97,7 @@ body {
         user-select: none;
 
         &:focus {
-            border-bottom: 1px solid $fgd;
+            border-bottom: 1px solid $fgc;
         }
     }
 

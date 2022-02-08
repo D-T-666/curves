@@ -43,10 +43,17 @@ export class Scene {
         this._p5 = p;
 
         this._colors = {
+            // Dark
             bg: this._p5.color(38, 37, 51, 255),
             bgd: this._p5.color(19, 18, 35, 63),
             fg: this._p5.color(237, 250, 255, 255),
             fgd: this._p5.color(237, 250, 255, 63),
+
+            // Light
+            //     bg: this._p5.color(255, 255),
+            //     bgd: this._p5.color(255, 63),
+            //     fg: this._p5.color(0, 255),
+            //     fgd: this._p5.color(0, 63),
         };
 
         this._world_transform = {
@@ -73,20 +80,21 @@ export class Scene {
             this._beziers.forEach((bezier) => {
                 bezier._draw_params = {
                     _resolution: 75,
-                    _fill: (t: number): p5.Color => {
-                        let a1 = rgb2lab([0, 100, 255]);
-                        let a2 = rgb2lab([255, 140, 100]);
-                        let col: [number, number, number] = lab2rgb([
-                            this._p5.lerp(a1[0], a2[0], t),
-                            this._p5.lerp(a1[1], a2[1], t),
-                            this._p5.lerp(a1[2], a2[2], t),
-                        ]);
-                        return this._p5.color(...col);
-                    },
-                    _stroke: this._p5.color(0),
+                    _fill: this._colors.bg,
+                    // (t: number): p5.Color => {
+                    //     let a1 = rgb2lab([255, 20, 100]);
+                    //     let a2 = rgb2lab([20, 160, 255]);
+                    //     let col: [number, number, number] = lab2rgb([
+                    //         this._p5.lerp(a1[0], a2[0], t),
+                    //         this._p5.lerp(a1[1], a2[1], t),
+                    //         this._p5.lerp(a1[2], a2[2], t),
+                    //     ]);
+                    //     return this._p5.color(...col);
+                    // },
+                    _stroke: this._p5.color(255),
                     _fill_weight: 32,
-                    _stroke_weight: 0,
-                    _caps: 3,
+                    _stroke_weight: 4,
+                    _caps: 15,
                     _thickness: 32,
                     _kind: "thick",
                 };

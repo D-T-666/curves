@@ -80,12 +80,7 @@ Scene.prototype.doubleClicked = function () {
 };
 
 Scene.prototype.mousePan = function (event: any) {
-    if (
-        event.x >= 316 ||
-        event.x <= 16 ||
-        event.y >= this._p5.height - 232 ||
-        event.y <= 16
-    )
+    if (event.x >= 332)
         if (event.ctrlKey) {
             this._world_transform.scale *= Math.exp(-event.deltaY / 100);
         } else {

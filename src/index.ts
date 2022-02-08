@@ -9,7 +9,7 @@ new p5((p: p5): void => {
     let main_scene: Scene;
 
     p.setup = (): void => {
-        p.createCanvas(p.windowWidth, p.windowHeight);
+        p.createCanvas(p.windowWidth - 332, p.windowHeight);
 
         main_scene = new Scene(p);
         side_panel = new SidePanel(p, main_scene);
@@ -33,4 +33,4 @@ new p5((p: p5): void => {
     p.mouseWheel = (event: any): void => {
         main_scene.mousePan(event);
     };
-});
+}, document.getElementById("p5-container"));
