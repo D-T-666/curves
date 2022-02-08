@@ -9,16 +9,15 @@ const writeToLocalStorage = (raw_data: any | string) => {
 };
 
 export const writeCurvesToLocalStorage = (curves: Bezier[]) => {
-    let data: { curves: any[] } = {
-        curves: [],
+    let data: { curves: { [index: string]: number[][] } } = {
+        curves: {},
     };
 
     curves.forEach((curve) => {
-        data.curves.push({
-            anchors: curve._anchors.map((a) => [a.x, a.y]),
-            name: curve._name,
-        });
+        data.curves[curve._name] = curve._anchors.map((a) => [a.x, a.y]);
     });
+
+    console.log(data);
 
     writeToLocalStorage(data);
 };
@@ -29,12 +28,15 @@ export const readCurvesFromLocalStorage = (p: p5): Bezier[] => {
 
     console.log(data);
 
-    return data.curves.map((curve: any) => ({
-        _anchors: curve.anchors.map((a: number[]) =>
-            p.createVector(a[0], a[1]),
-        ),
-        _name: curve.name,
-        _base_line: 0,
-        _thickness: 0,
-    }));
+    return Object.keys(data.curves).map((curve_name: any) => {
+        const curve = data.curves[curve_name];
+
+        return {
+            _anchors: curve.map((a: number[]) => p.createVector(a[0], a[1])),
+            _name: curve_name,
+            _base_line: 0,
+            _thickness: 0,
+            hidden: true,
+        };
+    });
 };

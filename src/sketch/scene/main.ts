@@ -108,6 +108,11 @@ export class Scene {
             writeCurvesToLocalStorage(this._beziers);
             window.localStorage.setItem("has_saved_data", "true");
         });
+
+        setInterval((e) => {
+            writeCurvesToLocalStorage(this._beziers);
+            window.localStorage.setItem("has_saved_data", "true");
+        }, 15000);
     }
 
     createNewCurve(name?: string) {
